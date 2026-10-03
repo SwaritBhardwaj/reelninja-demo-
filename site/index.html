@@ -344,11 +344,11 @@
 
         <div class="field">
           <div class="field__top">
-            <label class="field__label" for="in-minutes">Human editing minutes per video</label>
-            <span class="field__val" id="val-minutes">75 min</span>
+            <label class="field__label" for="in-minutes">Editor time per finished video</label>
+            <span class="field__val" id="val-minutes">4 hrs</span>
           </div>
-          <input type="range" id="in-minutes" min="5" max="180" step="5" value="75">
-          <p class="field__hint">Include finding the moment in the long-form, captions and revisions. Revisions are the part people usually underestimate.</p>
+          <input type="range" id="in-minutes" min="15" max="480" step="15" value="240">
+          <p class="field__hint">From raw footage to approved final: finding the moment, the cut, captions, B-roll and every revision round. Revisions are the part people usually underestimate.</p>
         </div>
 
         <div class="field">
@@ -379,6 +379,11 @@
               <td>Editing hours</td>
               <td class="them" id="out-hours">&mdash;</td>
               <td class="us">Ours, not yours</td>
+            </tr>
+            <tr>
+              <td>Videos one editor makes</td>
+              <td class="them" id="out-per-editor">&mdash;</td>
+              <td class="us">No headcount cap</td>
             </tr>
             <tr>
               <td>Editors to hire</td>
@@ -582,6 +587,6 @@
 </footer>
 
 <script src="assets/js/app.js?v=883d142769" defer></script>
-<script src="assets/js/math.js?v=7cf81e0a3c" defer></script>
+<script src="assets/js/math.js?v=17dadd0a2b" defer></script>
 </body>
 </html>

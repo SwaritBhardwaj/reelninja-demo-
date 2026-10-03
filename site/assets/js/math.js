@@ -47,7 +47,7 @@
     rate: $('in-rate'),
     out: $('out'),
     big: $('out-big'), bigSub: $('out-big-sub'),
-    hours: $('out-hours'), people: $('out-people'),
+    hours: $('out-hours'), people: $('out-people'), perEditor: $('out-per-editor'),
     costThem: $('out-cost-them'), costUs: $('out-cost-us'),
     cpsThem: $('out-cps-them'), cpsUs: $('out-cps-us'),
     tier: $('out-tier'),
@@ -60,6 +60,13 @@
   function num(n, dp) {
     var v = dp ? n.toFixed(dp) : Math.round(n);
     return Number(v).toLocaleString('en-US');
+  }
+
+  /* 240 -> "4 hrs", 90 -> "1 hr 30 min", 45 -> "45 min" */
+  function duration(min) {
+    var h = Math.floor(min / 60), m = min % 60;
+    var hs = h ? h + (h === 1 ? ' hr' : ' hrs') : '';
+    return hs && m ? hs + ' ' + m + ' min' : (hs || m + ' min');
   }
 
   /* Graduated cost of v videos in one month. */
@@ -102,6 +109,7 @@
     var videos = i.creators * i.perCreator;
     var hours = (videos * i.minutes) / 60;
     var people = hours / HOURS_PER_MONTH;
+    var perEditor = i.minutes > 0 ? (HOURS_PER_MONTH * 60) / i.minutes : 0;
     var costThem = hours * i.rate;
     var cpsThem = videos > 0 ? costThem / videos : 0;
 
@@ -109,7 +117,7 @@
     var cpsUs = videos > 0 ? costUs / videos : 0;
 
     return {
-      videos: videos, hours: hours, people: people,
+      videos: videos, hours: hours, people: people, perEditor: perEditor,
       costThem: costThem, cpsThem: cpsThem,
       band: topBand(videos), costUs: costUs, cpsUs: cpsUs,
       save: costThem - costUs, brk: breakEven(cpsThem)
@@ -132,15 +140,17 @@
 
     el.creatorsVal.textContent = num(i.creators) + (i.creators === 1 ? ' creator' : ' creators');
     el.videosVal.textContent = num(i.perCreator) + ' videos';
-    el.minutesVal.textContent = num(i.minutes) + ' min';
+    el.minutesVal.textContent = duration(i.minutes);
     if (document.activeElement !== el.rate) el.rate.value = i.rate;
 
     el.big.textContent = num(r.videos) + (r.videos === 1 ? ' video' : ' videos') + ' a month';
-    el.bigSub.textContent = 'That is ' + num(r.people, 2) + ' full-time editors at ' +
-      HOURS_PER_MONTH + ' hours a month, doing nothing else.';
+    el.bigSub.textContent = 'At ' + duration(i.minutes) + ' a video, one full-time editor finishes about ' +
+      num(Math.floor(r.perEditor)) + ' a month. This volume needs ' + num(r.people, 2) +
+      ' of them, doing nothing else.';
 
     el.hours.textContent = num(r.hours) + ' hrs';
     el.people.textContent = num(r.people, 2) + ' editors';
+    el.perEditor.textContent = num(Math.floor(r.perEditor)) + ' a month';
     el.costThem.textContent = money(r.costThem);
     el.costUs.textContent = money(r.costUs);
     el.cpsThem.textContent = money(r.cpsThem);
