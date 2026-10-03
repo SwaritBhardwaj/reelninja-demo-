@@ -5,11 +5,12 @@
 # only dynamic surface, the booking calendar, is a third-party iframe on
 # /book/ and is loaded by the browser directly.
 #
-# Deploy: npx wrangler deploy --temporary
-# The --temporary flag publishes to a throwaway preview account with no login,
-# which is what makes this a shareable link rather than a real deployment.
+# Deploy: npx wrangler deploy
+# Publishes to the Influenzo Cloudflare account below (claimed 2026-10-03).
+# Needs `npx wrangler login` or a CLOUDFLARE_API_TOKEN with Workers edit rights.
 
 name = "reelninja"
+account_id = "98087700e8effcc33958b04966398724"
 compatibility_date = "2025-09-24"
 
 [assets]

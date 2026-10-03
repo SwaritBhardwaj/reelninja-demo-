@@ -4,7 +4,7 @@ Landing page for **ReelNinja** — production infrastructure for content compani
 
 > 10× the videos. No new hires.
 
-**Live (temporary preview):** <https://reelninja.numerous-breadfruit.workers.dev>
+**Live:** <https://reelninja.numerous-breadfruit.workers.dev>
 
 The page sells a production *system*, not a clip service. An agency hands over
 how it edits once, that becomes a Style System, and from then on output stops
@@ -56,13 +56,13 @@ immutably without a deploy going unnoticed.
 ## Deploy
 
 ```bash
-npx wrangler deploy --temporary
+npx wrangler deploy
 ```
 
 `wrangler.toml` serves `./site` as static assets — there is no Worker script,
-which is the point. `--temporary` publishes to a throwaway preview account with
-no login, so the URL is a shareable link rather than a real deployment. Drop the
-flag and log in to publish to your own account.
+which is the point. It deploys to the Influenzo Cloudflare account pinned in
+`wrangler.toml`; authenticate with `npx wrangler login` or a
+`CLOUDFLARE_API_TOKEN` that has Workers edit rights.
 
 ## Design notes
 
