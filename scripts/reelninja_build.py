@@ -61,9 +61,9 @@ PLATFORM_ORDER = [
 
 FORMATS = [
     "9:16 vertical", "1:1 square", "4:5 feed", "16:9 long-form",
-    "Captions burned in", "Hook in 3 seconds", "Cold open", "B-roll cut",
-    "Colour matched", "Sound designed", "End card", "Chaptered",
-    "Clip packs", "Thumbnails",
+    "Talking head", "Infotainment", "Avatar video", "Motion graphics",
+    "SaaS explainer", "Launch video", "Captions burned in", "Hook in 3 seconds",
+    "B-roll cut", "Colour matched", "Sound designed", "End card", "Clip packs",
 ]
 
 # --------------------------------------------------------------- fragments
@@ -148,7 +148,7 @@ def build_jsonld(page: str, base: str) -> str:
             "@type": "Service",
             "@id": url + "#service",
             "name": "Video production system",
-            "serviceType": "Video production infrastructure for content companies",
+            "serviceType": "Short-form video production, avatar videos, motion graphics, SaaS explainers and launch videos",
             "provider": {"@id": url + "#org"},
             "areaServed": "Worldwide",
             "description": ("A Style System extracted from a company's own published work, "
@@ -183,7 +183,12 @@ def build_llms(base: str) -> str:
 > editing workflow into a production system, so output stops being capped by how
 > many editors it can hire.
 
-ReelNinja builds a **Style System** from videos a company has already published:
+ReelNinja makes short-form video at volume (clips from any long-form footage,
+talking-head and infotainment shorts, podcast clips) and project work (AI avatar
+videos, motion graphics, SaaS explainers and launch videos).
+
+For short-form, ReelNinja builds a **Style System** from videos a company has
+already published:
 type, colour, caption style, hook structure, pacing, transitions, B-roll rules,
 sound and end cards. Raw footage then goes through that system in production,
 with a human QA pass signing off on every video before anything ships. The
@@ -197,8 +202,9 @@ makes the system better at that company's style.
 ## What it is
 
 - Production infrastructure, not an agency and not a tool the client runs.
-- Built for content companies running three or more creators, channels or
-  shows, needing twenty or more short-form pieces a month between them.
+- Built for teams that make content for founders, creators, brands or shows,
+  their own or their clients', and need twenty or more short-form pieces a
+  month, or a launch video or explainer that has to land.
 - The client's clients never deal with ReelNinja. Work ships under the client's
   own name.
 
@@ -215,7 +221,8 @@ negotiable.
 - Per short-form video, graduated like tax brackets (each rate covers only the
   videos inside its band): $45 (1\u201350), $40 (51\u2013150), $35 (151\u2013300),
   $30 (301\u2013500), $25 (501+).
-- Avatar, motion-graphics and long-form edits are quoted separately.
+- Avatar videos, motion graphics, SaaS explainers, launch videos and long-form
+  edits are quoted per project.
 
 There is an interactive calculator on the site that runs the visitor's own
 numbers (creators, videos per creator, human editing minutes per video, editor

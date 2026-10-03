@@ -512,7 +512,16 @@ input[type="range"]::-moz-range-thumb {
   letter-spacing: var(--tr-mono); text-transform: uppercase; color: var(--text-invert-muted);
 }
 .spec__table tbody th { font-weight: 500; }
-.spec__table tbody th { display: flex; align-items: center; gap: var(--s-5); }
+/* Group rows name the two ways work is priced. */
+.spec__table .spec__group th {
+  display: table-cell; padding-block: var(--s-10) var(--s-3);
+  font-family: var(--font-mono); font-size: var(--t-mono); font-weight: 400;
+  letter-spacing: var(--tr-mono); text-transform: uppercase; color: var(--text-invert);
+  border-bottom: 1px solid var(--line-invert-strong);
+}
+.spec__table tbody:first-of-type .spec__group th { padding-top: var(--s-6); }
+.spec__table tbody tr.spec__group:hover { background: none; }
+.spec__fmt { display: flex; align-items: center; gap: var(--s-5); }
 .spec__name { font-size: 1.125rem; line-height: 1.25; letter-spacing: -0.015em; }
 .spec__shapes { display: inline-flex; align-items: flex-end; gap: 6px; width: 64px; height: 40px; flex: 0 0 auto; }
 .ar { display: block; border: 1px solid var(--paper-100); border-radius: 2px; background: var(--ink-700); }
@@ -532,6 +541,9 @@ input[type="range"]::-moz-range-thumb {
   .spec__table tr { padding-block: var(--s-6); border-bottom: 1px solid var(--line-invert); display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: var(--s-2) var(--s-4); }
   .spec__table th, .spec__table td { padding: 0; border: 0; }
   .spec__table tbody th { grid-column: 1; }
+  .spec__table tr.spec__group { display: block; padding-block: var(--s-10) var(--s-3); border-bottom-color: var(--line-invert-strong); }
+  .spec__table tbody:first-of-type tr.spec__group { padding-top: var(--s-4); }
+  .spec__table .spec__group th { display: block; padding: 0; border: 0; }
   .spec__table .spec__price { grid-column: 2; grid-row: 1; align-self: center; }
   .spec__table .spec__ar { grid-column: 1 / -1; padding-left: calc(64px + var(--s-5)); }
   .spec__table .spec__in { grid-column: 1 / -1; padding-left: calc(64px + var(--s-5)); }

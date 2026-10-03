@@ -12,17 +12,22 @@ web
 
 ## Users
 
-Owners and production leads at content agencies who already have clients and
-need more short-form output than their editing team can produce. First segment:
-podcast production agencies (their clients already record long-form audio and
-video weekly), then LinkedIn and personal-branding agencies. Mostly US and Canada,
-founder-run, decide in one call. They arrive from warm or cold outreach, often on
-a phone, comparing against hiring another editor or a commodity clip service.
+Anyone who needs more video than their team can edit: content and
+personal-branding agencies, creator and founder teams, startups and SaaS
+companies. Two jobs: short-form at volume (clips, talking-head, infotainment,
+podcast clips) and project work (avatar videos, motion graphics, SaaS explainers,
+launch videos). Mostly US and Canada, decide in one call, often reading on a phone.
+
+Outreach (strategy, not the site's scope): podcast production agencies are the
+first segment approached, because their clients already record long-form weekly.
+The site must not read as podcast-only.
 
 ## Product Purpose
 
-ReelNinja Studio (Influenzo Technologies LLP) produces short-form video for
-agencies under the agency's own name. The agency sends raw footage; ReelNinja
+ReelNinja Studio (Influenzo Technologies LLP) produces short-form video at
+volume, under the client's own name, and project videos: avatar videos, motion
+graphics, SaaS explainers and launch videos. Faster, better, cheaper is the
+metric. The agency sends raw footage; ReelNinja
 builds a Style System from the agency's own published videos and produces clips
 in that style, with a human QA pass on every video. Success: an agency raises its
 monthly output without hiring editors, and the work is indistinguishable from
@@ -46,8 +51,8 @@ ClickUp). Turnaround and revision rounds are what agencies check before signing.
 
 - Pricing (published, USD): $500 to $2,000 one-time Style System setup; then a
   graduated per-video ladder of $45 (1 to 50), $40 (51 to 150), $35 (151 to 300),
-  $30 (301 to 500), $25 (501+). Avatar, motion-graphics and long-form edits are
-  quoted separately.
+  $30 (301 to 500), $25 (501+). Avatar videos, motion graphics, SaaS explainers,
+  launch videos and long-form edits are quoted per project.
 - Free sample first: three finished clips cut from the agency's own footage,
   before any fee.
 - Under 20 videos a month, a freelancer is usually the better fit, and the page
