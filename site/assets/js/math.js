@@ -15,20 +15,21 @@
   'use strict';
 
   /* ---- published constants. Change here, changes everywhere. ----
-     Source: proposed USD ladder, 2026-10-03, pending sign-off. Benchmarked in
-     Influenzo-biz-vault 07-STRATEGIC/2026-09-23-white-label-pricing-research.md
-     ($50-60 a short at entry, never below the ~$31 commodity floor).
+     Source: USD ladder set by Swarit, 2026-10-03: start at $45, step down $5
+     a band, floor at $25. Market context in Influenzo-biz-vault
+     07-STRATEGIC/2026-09-23-white-label-pricing-research.md.
 
      The ladder is GRADUATED, like tax brackets: each rate covers only the
-     videos inside its band. The first 50 are $60, the next 100 are $50, and so
+     videos inside its band. The first 50 are $45, the next 100 are $40, and so
      on. That way adding a video can never lower the monthly bill, which an
      all-units ladder does at every band edge. Must match the table in
      src/index.html. */
   var LADDER = [
-    { upTo: 50,       price: 60, label: '1 – 50' },
-    { upTo: 150,      price: 50, label: '51 – 150' },
-    { upTo: 300,      price: 40, label: '151 – 300' },
-    { upTo: Infinity, price: 35, label: '301 +' }
+    { upTo: 50,       price: 45, label: '1 – 50' },
+    { upTo: 150,      price: 40, label: '51 – 150' },
+    { upTo: 300,      price: 35, label: '151 – 300' },
+    { upTo: 500,      price: 30, label: '301 – 500' },
+    { upTo: Infinity, price: 25, label: '501 +' }
   ];
   var HOURS_PER_MONTH = 160;   // one full-time editor
   var SETUP_LOW = 500;         // published setup range, USD
@@ -115,7 +116,15 @@
     };
   }
 
-  function months(n) { return n < 1 ? 'under a month' : n.toFixed(1) + ' months'; }
+  function months(n) {
+    if (n < 1) return 'under a month';
+    var r = Math.round(n * 10) / 10;
+    return r === 1 ? '1 month' : r + ' months';
+  }
+  function monthRange(lo, hi) {
+    var a = months(lo), b = months(hi);
+    return a === b ? a : a + ' to ' + b;
+  }
 
   function render() {
     var i = read();
@@ -166,9 +175,7 @@
         '. At this volume a good freelancer is usually the better call, and we would rather say that now than on a call.';
     } else if (r.save > 0 && !same) {
       el.slot.textContent = setup + ' At this saving it pays for itself in ' +
-        (SETUP_HIGH / r.save < 1
-          ? 'under a month'
-          : months(SETUP_LOW / r.save) + ' to ' + months(SETUP_HIGH / r.save)) + '.';
+        monthRange(SETUP_LOW / r.save, SETUP_HIGH / r.save) + '.';
     } else {
       el.slot.textContent = setup + ' At this volume it is an added cost, not something the savings pay back.';
     }

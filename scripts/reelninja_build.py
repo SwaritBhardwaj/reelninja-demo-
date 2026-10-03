@@ -255,8 +255,8 @@ negotiable.
   formats, brands, motion and avatar requirements there are. Quoted before any
   commitment.
 - Per short-form video, graduated like tax brackets (each rate covers only the
-  videos inside its band): $60 (1\u201350), $50 (51\u2013150), $40 (151\u2013300),
-  $35 (301+).
+  videos inside its band): $45 (1\u201350), $40 (51\u2013150), $35 (151\u2013300),
+  $30 (301\u2013500), $25 (501+).
 - Avatar, motion-graphics and long-form edits are quoted separately.
 
 There is an interactive calculator on the site that runs the visitor's own
