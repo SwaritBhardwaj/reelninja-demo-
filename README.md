@@ -2,7 +2,7 @@
 
 Landing page for **ReelNinja** — production infrastructure for content companies.
 
-> 10× the videos. Same editing team.
+> 10× the videos. No new hires.
 
 **Live:** <https://reelninja.visual-language-4c9.workers.dev>
 
@@ -86,15 +86,14 @@ flag and log in to publish to your own account.
 
 Stated plainly, because a public page should not overstate itself:
 
-- **The booking calendar is a placeholder.** `/book/` points at the handle
-  `reelninja/20min`, which is not a live event, so the embed resolves empty.
-  Swap the handle in `assets/js/book.js` and in the fallback link in
-  `book/index.html`.
 - **The gallery is placeholder frames.** No client clips are published, and the
   page says so on itself.
 - **"10× the videos" is a positioning claim, not a measured result.** One case
   study with before-and-after numbers would make it evidence.
-- **The setup fee and volume tiers are indicative ranges**, not quoted prices.
+- **The USD ladder is a proposal** (2026-10-03), benchmarked against published
+  competitor rates, not yet against a logged cost per video. The setup fee is a
+  range, quoted per client. The ladder lives in two places that must agree: the
+  table in `src/index.html` and `LADDER` in `assets/js/math.js`.
 
 ## Credits
 

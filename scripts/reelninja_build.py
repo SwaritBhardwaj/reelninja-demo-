@@ -143,17 +143,20 @@ def build_jsonld(page: str, base: str) -> str:
     ]
 
     setup = re.search(r'<p class="ladder__amt">(.*?)</p>', page, re.S)
-    bands = re.findall(
-        r"<tr[^>]*><td>([^<]*?(?:&ndash;|&mdash;|-)[^<]*?)</td><td>([^<]*?)</td></tr>", page
-    )
-    prices = [int(p) for p in re.findall(r"&#8377;([\d,]+)", page) if int(p.replace(",", "")) < 10000]
+    # Read bands and prices from the ladder table only, so the setup fee and
+    # any other dollar figure on the page can never leak into the per-video offer.
+    ladder = re.search(r'<table class="ladder__table">(.*?)</table>', page, re.S)
+    bands = re.findall(r"<tr[^>]*><td>([^<]*?)</td><td>([^<]*?)</td></tr>",
+                       ladder.group(1)) if ladder else []
+    prices = [int(m.group(1).replace(",", ""))
+              for _, p in bands if (m := re.search(r"\$([\d,]+)", p))]
 
-    offers: dict = {"@type": "AggregateOffer", "priceCurrency": "INR"}
+    offers: dict = {"@type": "AggregateOffer", "priceCurrency": "USD"}
     if prices:
         offers |= {"lowPrice": str(min(prices)), "highPrice": str(max(prices)),
                    "offerCount": str(len(bands) or len(prices))}
     if bands:
-        offers["description"] = "Per video, by monthly volume: " + "; ".join(
+        offers["description"] = "Per short-form video, graduated by monthly volume: " + "; ".join(
             f"{strip_tags(b)} {strip_tags(p)}" for b, p in bands
         ) + "."
 
@@ -167,7 +170,7 @@ def build_jsonld(page: str, base: str) -> str:
             "logo": {"@type": "ImageObject", "url": url + "assets/icons/icon-512.png",
                      "width": 512, "height": 512},
             "image": url + "og.png",
-            "slogan": "10\u00d7 the videos. Same editing team.",
+            "slogan": "10\u00d7 the videos. No new hires.",
             "description": ("ReelNinja turns a content company's editing workflow into a "
                             "production system, so output stops being capped by how many "
                             "editors the company can hire."),
@@ -202,7 +205,7 @@ def build_jsonld(page: str, base: str) -> str:
             graph[2]["offers"]["priceSpecification"] = {
                 "@type": "UnitPriceSpecification",
                 "name": "One-time Style System setup",
-                "priceCurrency": "INR",
+                "priceCurrency": "USD",
                 "description": strip_tags(setup.group(1)),
             }
     if faq:
@@ -225,9 +228,10 @@ def build_llms(base: str) -> str:
 ReelNinja builds a **Style System** from videos a company has already published:
 type, colour, caption style, hook structure, pacing, transitions, B-roll rules,
 sound and end cards. Raw footage then goes through that system in production,
-with a human QA pass signing off on every frame before anything ships. The
+with a human QA pass signing off on every video before anything ships. The
 company keeps its clients, its strategy and its creative direction. ReelNinja
-owns production and never speaks to the end client.
+handles production and never speaks to the end client. Finals are delivered
+unbranded into the tools the company already uses.
 
 The per-video rate falls as monthly volume rises, because every video produced
 makes the system better at that company's style.
@@ -235,20 +239,24 @@ makes the system better at that company's style.
 ## What it is
 
 - Production infrastructure, not an agency and not a tool the client runs.
-- Built for content companies running five or more creators, channels or shows,
-  each needing twenty to a hundred pieces a month.
+- Built for content companies running three or more creators, channels or
+  shows, needing fifty or more short-form pieces a month between them.
 - The client's clients never deal with ReelNinja. Work ships under the client's
   own name.
 
 ## Pricing
 
-All prices in Indian rupees (INR), published rather than negotiable.
+All prices in US dollars (USD). Per-video rates are published rather than
+negotiable.
 
-- One-time Style System setup: \u20b950,000 \u2013 \u20b92,00,000, depending on how
-  many formats, brands, motion and avatar requirements there are. Quoted before
-  any commitment.
-- Per video, by monthly volume: \u20b9500 (1\u201320), \u20b9400 (21\u201350),
-  \u20b9300 (51\u2013100), \u20b9200 (101\u2013250), from \u20b9150 (251+).
+- Free sample first: three finished clips cut from the company's own footage,
+  before any fee.
+- One-time Style System setup: $500 \u2013 $2,000, depending on how many
+  formats, brands, motion and avatar requirements there are. Quoted before any
+  commitment.
+- Per short-form video, graduated like tax brackets (each rate covers only the
+  videos inside its band): $60 (1\u201350), $50 (51\u2013150), $40 (151\u2013300),
+  $35 (301+).
 - Avatar, motion-graphics and long-form edits are quoted separately.
 
 There is an interactive calculator on the site that runs the visitor's own
@@ -259,15 +267,14 @@ hourly cost) against this published ladder.
 
 ReelNinja is not an agency and does not find clients, does not do strategy,
 positioning or creative direction, and does not provide legal advice. Below
-roughly 100 videos a month the setup does not pay for itself and the answer is
-that ReelNinja is the wrong fit. No leads, clients, revenue, views or followers
+roughly 50 videos a month a good freelancer is usually the better fit. No leads, clients, revenue, views or followers
 are promised.
 
 ## Pages
 
 - [Home]({url}): positioning, the three-layer system, the calculator, the
   published pricing ladder and the FAQ.
-- [Book a 20-minute call]({url}book/): the scheduling surface.
+- [Book a 30-minute call]({url}book/): the scheduling surface.
 """
 
 

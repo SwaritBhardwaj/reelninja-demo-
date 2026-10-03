@@ -7,11 +7,11 @@
 
 (function () {
   // -------------------------------------------------------------------------
-  // SWAP THIS ONE LINE for the live booking handle before deploying.
+  // The live booking handle.
   // Format is "<username>/<event-slug>" exactly as it appears in the cal.com
   // URL. The same value is repeated in the fallback href in book/index.html.
   // -------------------------------------------------------------------------
-  var CAL_LINK = 'reelninja/20min';
+  var CAL_LINK = 'swarit-influenzo/30min';
 
   var CAL_ORIGIN = 'https://cal.com';
   var EMBED_SRC = 'https://app.cal.com/embed/embed.js';
