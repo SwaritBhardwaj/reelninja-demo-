@@ -51,7 +51,8 @@
     costThem: $('out-cost-them'), costUs: $('out-cost-us'),
     cpsThem: $('out-cps-them'), cpsUs: $('out-cps-us'),
     tier: $('out-tier'),
-    delta: $('out-delta'), brk: $('out-break'), slot: $('out-slot')
+    delta: $('out-delta'), brk: $('out-break'), slot: $('out-slot'),
+    peekVideos: $('peek-videos'), peekSave: $('peek-save')
   };
   if (!el.creators || !el.out) return;   // not on this page
 
@@ -159,6 +160,13 @@
 
     el.delta.textContent = num(r.videos) + ' videos a month costs you ' + money(r.costThem) +
       ' in editing today. On the system, at our published rates, ' + money(r.costUs) + '.';
+
+    if (el.peekVideos) {
+      el.peekVideos.textContent = num(r.videos) + ' videos a month';
+      el.peekSave.textContent = r.save > 0
+        ? money(r.save) + ' a month less'
+        : r.save < 0 ? money(-r.save) + ' a month more' : 'Same cost';
+    }
 
     var editors = '<strong>' + num(r.people, 2) + ' editors</strong>';
     var same = Math.abs(r.save) <= SAME_WITHIN * Math.max(r.costThem, r.costUs);

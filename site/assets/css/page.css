@@ -26,6 +26,22 @@ table { border-collapse: collapse; width: 100%; }
 ul, ol { list-style: none; padding: 0; }
 
 :focus-visible { outline: 2px solid currentColor; outline-offset: 3px; border-radius: var(--r-sm); }
+/* A paper button on ink (or ink on paper) would draw its ring in its own text
+   colour, which is the colour of the ground behind it: an invisible ring. */
+.btn--paper:focus-visible { outline-color: var(--paper-100); }
+.btn--ink:focus-visible { outline-color: var(--ink-900); }
+
+/* The parts the browser draws still belong to the page. */
+::selection { background: var(--ink-900); color: var(--paper-100); }
+.band--ink ::selection, .site-head ::selection, footer ::selection { background: var(--paper-100); color: var(--ink-900); }
+html { accent-color: var(--ink-900); scrollbar-color: var(--ink-600) var(--paper-200); }
+.band--ink { accent-color: var(--paper-100); }
+p, li, dd { text-wrap: pretty; }
+/* Geist closes up at 13-14px until "rn" reads as "m" ("burned", "turn"). A
+   hair of tracking on the small sizes keeps the pairs apart. */
+.small, .defuse, .hero__note, .layer__body, .spec__in, .offer__sub, .step__body,
+.faq__a, .ladder__desc, .ladder__note, .calc__note, .calc__break, .calc__slot,
+.field__hint, .site-foot { letter-spacing: 0.012em; }
 
 .skip {
   position: absolute; left: -9999px; top: 0; z-index: 100;
@@ -91,6 +107,7 @@ ul, ol { list-style: none; padding: 0; }
   max-width: 46ch;
 }
 .band--ink .lead { color: var(--text-invert-muted); }
+.h1 + .lead, .h2 + .lead, .display + .lead { margin-top: var(--s-5); }
 .measure { max-width: 62ch; }
 .small { font-size: var(--t-small); line-height: 1.6; }
 .muted { color: var(--text-muted); }
@@ -175,7 +192,9 @@ ul, ol { list-style: none; padding: 0; }
 }
 .hero .display { max-width: 16ch; }
 .hero__sub { margin-top: var(--s-6); max-width: 40em; }
-.hero__acts { margin-top: var(--s-10); display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-6); }
+.hero__acts { margin-top: var(--s-10); display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-4) var(--s-6); }
+.hero__note { margin-top: var(--s-5); font-size: var(--t-small); color: var(--text-invert-muted); max-width: 46ch; }
+.hero__note .link-u { color: var(--text-invert); }
 .defuse {
   margin-top: var(--s-8); padding-top: var(--s-6);
   border-top: 1px solid var(--line-invert);
@@ -184,54 +203,88 @@ ul, ol { list-style: none; padding: 0; }
 }
 .defuse strong { color: var(--text-invert); font-weight: 500; }
 
-/* cascade: one style system, every video after it */
+/* cascade: one raw episode, a playhead, eight clips.
+   The default state is the finished one: every clip rendered, every mark lit.
+   The entrance plays that state in once, in order, as the playhead crosses each
+   mark, then stops. Nothing loops, so there is nothing to pause. */
+.cascade { --sweep: 3600ms; --start: 450ms; --len: 3520; }
+.src { margin-bottom: var(--s-4); }
+.src__head {
+  display: flex; justify-content: space-between; gap: var(--s-4);
+  color: var(--text-invert-muted); margin-bottom: var(--s-2);
+}
+.src__track {
+  position: relative; height: 40px;
+  border: 1px solid var(--line-invert); border-radius: var(--r-sm);
+  background: var(--ink-800); overflow: hidden;
+}
+/* The waveform is a drawn SVG of one spoken episode: phrases, pauses, peaks. */
+.src__wave {
+  position: absolute; inset: 9px 0; width: 100%; height: calc(100% - 18px);
+  fill: rgba(250, 250, 250, 0.3);
+}
+.src__mark {
+  position: absolute; top: 0; bottom: 0; width: 2px;
+  left: calc(var(--at) / var(--len) * 100%);
+  background: var(--paper-100);
+  animation: mark-on 1ms linear both;
+  animation-delay: calc(var(--start) + var(--sweep) * var(--at) / var(--len));
+}
+@keyframes mark-on { from { background: var(--ink-600); } }
+.src__head-line {
+  position: absolute; top: 0; bottom: 0; left: 0; width: 1px;
+  background: var(--paper-100); box-shadow: 0 0 0 1px rgba(250,250,250,.12);
+  transform: translateX(-2px); opacity: 0;
+  animation: playhead var(--sweep) linear var(--start) both;
+}
+@keyframes playhead {
+  0%   { opacity: 1; left: 0; }
+  96%  { opacity: 1; }
+  100% { opacity: 0; left: 100%; }
+}
+
 .cascade__grid {
   display: grid; min-width: 0;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: var(--s-3);
 }
 @media (max-width: 620px) {
-  .cascade__grid {
-    display: flex; gap: var(--s-3);
-    overflow-x: auto; scroll-snap-type: x mandatory;
-    padding-bottom: var(--s-4); -webkit-overflow-scrolling: touch;
-  }
-  .cascade__grid > * { flex: 0 0 40vw; scroll-snap-align: start; }
+  /* Two rows of four still fit a phone at 9:16 when the gap tightens, which
+     beats the old sideways-scrolling strip of empty tiles. */
+  .cascade__grid { gap: var(--s-2); }
 }
 .flip {
+  position: relative; overflow: hidden;
   aspect-ratio: 9 / 16;
-  border: 1px solid var(--line-invert);
+  border: 1px solid var(--line-invert-strong);
   border-radius: var(--r-sm);
-  background: var(--ink-800);
-  display: flex; align-items: flex-end; padding: var(--s-3);
+  background: linear-gradient(180deg, var(--ink-700), var(--ink-800) 70%);
+  display: flex; flex-direction: column; justify-content: flex-end; gap: 5px;
+  padding: var(--s-3) var(--s-2) var(--s-3);
+  animation: clip-render var(--dur-slow) var(--ease) both;
+  animation-delay: calc(var(--start, 450ms) + var(--sweep, 3600ms) * var(--at) / 3520);
+}
+.cascade .flip { --start: 450ms; --sweep: 3600ms; }
+@keyframes clip-render {
+  from { background: var(--ink-800); border-color: var(--line-invert); clip-path: inset(0 0 100% 0); }
+  to   { clip-path: inset(0); }
+}
+/* Burned-in caption lines, the most recognisable mark of a finished short. */
+.flip__cap {
+  display: block; height: 5px; width: 78%; margin-inline: auto;
+  border-radius: 1px; background: var(--paper-100);
+}
+.flip__cap--short { width: 52%; opacity: .7; margin-bottom: var(--s-3); }
+.flip__tc {
+  position: absolute; top: var(--s-2); left: var(--s-2);
+  font-size: 0.625rem; letter-spacing: 0.06em; color: var(--text-invert-muted);
 }
 .flip__idx { font-family: var(--font-mono); font-size: 0.6875rem; color: var(--text-invert-muted); }
-
-/* The hero was static. Every moving part on this page sat below the fold, so the
-   first screen gave no sign the page was alive. The eight frames now run a slow
-   production sweep, staggered left to right -- on brand for a production line,
-   and too slow to compete with the headline. */
-.flip { position: relative; overflow: hidden; }
-.flip::after {
-  content: ""; position: absolute; left: 0; right: 0; top: 0; height: 38%;
-  background: linear-gradient(180deg, transparent, rgba(250, 250, 250, 0.16), transparent);
-  animation: sweep 5.6s cubic-bezier(0.45, 0, 0.25, 1) infinite;
-  animation-delay: var(--sd, 0ms);
-  pointer-events: none;
-}
-.flip:nth-child(1)::after { --sd: 0ms; }
-.flip:nth-child(2)::after { --sd: 280ms; }
-.flip:nth-child(3)::after { --sd: 560ms; }
-.flip:nth-child(4)::after { --sd: 840ms; }
-.flip:nth-child(5)::after { --sd: 1120ms; }
-.flip:nth-child(6)::after { --sd: 1400ms; }
-.flip:nth-child(7)::after { --sd: 1680ms; }
-.flip:nth-child(8)::after { --sd: 1960ms; }
-@keyframes sweep {
-  0%        { transform: translateY(-100%); opacity: 0; }
-  10%       { opacity: 1; }
-  55%       { opacity: 1; }
-  70%, 100% { transform: translateY(265%); opacity: 0; }
+@media (max-width: 620px) {
+  .flip { padding: var(--s-2) 6px; gap: 3px; }
+  .flip__cap { height: 3px; }
+  .flip__tc { font-size: 0.5625rem; top: 6px; left: 6px; }
+  .flip__idx { font-size: 0.5625rem; }
 }
 .cascade__cap {
   margin-top: var(--s-5); display: flex; justify-content: space-between;
@@ -313,18 +366,18 @@ ul, ol { list-style: none; padding: 0; }
 
 input[type="range"] {
   -webkit-appearance: none; appearance: none;
-  width: 100%; height: 24px; background: transparent; cursor: grab;
+  width: 100%; height: 32px; background: transparent; cursor: grab;
 }
 input[type="range"]:active { cursor: grabbing; }
 input[type="range"]::-webkit-slider-runnable-track { height: 1px; background: var(--line-invert-strong); }
 input[type="range"]::-moz-range-track { height: 1px; background: var(--line-invert-strong); }
 input[type="range"]::-webkit-slider-thumb {
   -webkit-appearance: none; appearance: none;
-  width: 14px; height: 14px; margin-top: -7px;
+  width: 18px; height: 18px; margin-top: -9px;
   border-radius: 3px; background: var(--paper-100); border: 0;
 }
 input[type="range"]::-moz-range-thumb {
-  width: 14px; height: 14px; border-radius: 3px;
+  width: 18px; height: 18px; border-radius: 3px;
   background: var(--paper-100); border: 0;
 }
 .num {
@@ -338,7 +391,7 @@ input[type="range"]::-moz-range-thumb {
   font-variant-numeric: tabular-nums;
 }
 .num input:focus { outline: none; }
-.num:focus-within { border-color: var(--text-invert); }
+.num:focus-within { border-color: var(--text-invert); outline: 2px solid var(--paper-100); outline-offset: 6px; border-radius: 1px; }
 
 .calc__big {
   font-size: var(--t-reading);
@@ -378,10 +431,28 @@ input[type="range"]::-moz-range-thumb {
   border: 1px solid var(--line-invert-strong); border-radius: var(--r-sm);
   font-size: var(--t-small); line-height: 1.6; color: var(--text-invert-muted);
 }
+.calc__go {
+  margin-top: var(--s-8);
+  display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-4) var(--s-6);
+}
+.calc__peek { display: none; }
+@media (max-width: 979px) {
+  /* While the inputs are on screen, the result rides along with them, so a
+     visitor on a phone sees the number move as they drag. */
+  .calc__peek {
+    display: flex; justify-content: space-between; gap: var(--s-4);
+    position: sticky; bottom: 0; z-index: 5;
+    margin-inline: calc(var(--shell-x) * -1);
+    padding: var(--s-4) var(--shell-x);
+    background: var(--paper-100); color: var(--ink-900);
+    font-size: var(--t-small); font-weight: 500; font-variant-numeric: tabular-nums;
+    box-shadow: 0 -8px 24px -12px rgba(0,0,0,.6);
+  }
+}
 .calc__note {
   margin-top: var(--s-10); padding-top: var(--s-6);
   border-top: 1px solid var(--line-invert);
-  max-width: 54em; font-size: 0.8125rem; line-height: 1.65;
+  max-width: 62ch; font-size: var(--t-small); line-height: 1.65;
   color: var(--text-invert-muted);
 }
 
@@ -423,84 +494,64 @@ input[type="range"]::-moz-range-thumb {
 .ladder__table tr.is-best td { background: var(--paper-300); }
 .ladder__table tr.is-best td:first-child { color: var(--text); }
 .ladder__note {
-  margin-top: var(--s-8); max-width: 54em;
-  font-size: 0.8125rem; line-height: 1.65; color: var(--text-muted);
+  margin-top: var(--s-8); max-width: 62ch;
+  font-size: var(--t-small); line-height: 1.65; color: var(--text-muted);
 }
 
-/* ---------- work: a filterable gallery ----------
-   The filters are the point. A production company's gallery is organised by the
-   formats it actually runs, and letting a visitor narrow to the one format they
-   care about beats showing everything at once. */
-.filters {
-  margin-top: var(--s-10);
-  display: flex; flex-wrap: wrap; gap: var(--s-2);
+/* ---------- formats: the spec sheet ----------
+   A production company with no publishable reel shows what it makes instead,
+   at the proportions it makes it in. */
+.spec { margin-top: var(--s-12); }
+.spec__table th, .spec__table td {
+  padding-block: var(--s-6); padding-right: var(--s-6);
+  border-bottom: 1px solid var(--line-invert); text-align: left; vertical-align: middle;
 }
-.chip {
-  display: inline-flex; align-items: center; gap: var(--s-2);
-  padding: 0.5rem 0.9rem;
-  border: 1px solid var(--line-invert-strong); border-radius: 999px;
-  font-family: var(--font-mono); font-size: 0.6875rem;
-  letter-spacing: 0.08em; text-transform: uppercase;
-  color: var(--text-invert-muted);
-  transition: color var(--dur-fast) var(--ease), border-color var(--dur-fast) var(--ease),
-              background var(--dur-fast) var(--ease);
+.spec__table thead th {
+  padding-block: 0 var(--s-3);
+  font-family: var(--font-mono); font-size: var(--t-mono); font-weight: 400;
+  letter-spacing: var(--tr-mono); text-transform: uppercase; color: var(--text-invert-muted);
 }
-.chip:hover { color: var(--text-invert); border-color: var(--text-invert); }
-.chip.is-on { background: var(--paper-100); color: var(--ink-900); border-color: var(--paper-100); }
-.chip__n { opacity: 0.55; font-variant-numeric: tabular-nums; }
-/* With scripting off the chips cannot filter anything, so they are not shown
-   rather than sitting there dead. Every frame stays visible. */
-html:not(.js) .filters { display: none; }
+.spec__table tbody th { font-weight: 500; }
+.spec__table tbody th { display: flex; align-items: center; gap: var(--s-5); }
+.spec__name { font-size: 1.125rem; line-height: 1.25; letter-spacing: -0.015em; }
+.spec__shapes { display: inline-flex; align-items: flex-end; gap: 6px; width: 64px; height: 40px; flex: 0 0 auto; }
+.ar { display: block; border: 1px solid var(--paper-100); border-radius: 2px; background: var(--ink-700); }
+.ar--9x16 { height: 40px; width: 22.5px; }
+.ar--1x1  { height: 26px; width: 26px; }
+.ar--4x5  { height: 32px; width: 25.6px; }
+.ar--16x9 { height: 18px; width: 32px; }
+.spec__ar { color: var(--text-invert-muted); white-space: nowrap; }
+.spec__in { color: var(--text-invert-muted); font-size: var(--t-small); line-height: 1.6; max-width: 46ch; }
+.spec__price { text-align: right; white-space: nowrap; font-size: var(--t-small); font-weight: 500; padding-right: 0; }
+.spec__table tr.is-quoted .spec__price { color: var(--text-invert-muted); font-weight: 400; }
+.spec__table tbody tr { transition: background var(--dur-fast) var(--ease); }
+.spec__table tbody tr:hover { background: var(--ink-800); }
+@media (max-width: 760px) {
+  .spec__table thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+  .spec__table, .spec__table tbody, .spec__table tr, .spec__table th, .spec__table td { display: block; }
+  .spec__table tr { padding-block: var(--s-6); border-bottom: 1px solid var(--line-invert); display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: var(--s-2) var(--s-4); }
+  .spec__table th, .spec__table td { padding: 0; border: 0; }
+  .spec__table tbody th { grid-column: 1; }
+  .spec__table .spec__price { grid-column: 2; grid-row: 1; align-self: center; }
+  .spec__table .spec__ar { grid-column: 1 / -1; padding-left: calc(64px + var(--s-5)); }
+  .spec__table .spec__in { grid-column: 1 / -1; padding-left: calc(64px + var(--s-5)); }
+}
 
-.frames__meta {
-  margin-top: var(--s-6);
-  display: flex; flex-wrap: wrap; gap: var(--s-3) var(--s-6);
-  justify-content: space-between; align-items: baseline;
-  color: var(--text-invert-muted);
+.offer {
+  margin-top: clamp(3rem, 7vw, 5rem);
+  display: grid; gap: var(--s-6); align-items: end;
+  grid-template-columns: minmax(0, 1fr);
+  padding-top: var(--s-10); border-top: 1px solid var(--line-invert-strong);
 }
-
-.frames {
-  margin-top: var(--s-6);
-  display: grid; gap: var(--s-4);
-  /* Two-up from the smallest screen. One column of 9:16 frames is a dozen
-     full screens of scrolling for what is still a placeholder. */
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+@media (min-width: 900px) {
+  .offer { grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr) auto; gap: var(--s-10); }
 }
-@media (min-width: 620px)  { .frames { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
-@media (min-width: 1000px) { .frames { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
-
-.frame {
-  position: relative;
-  aspect-ratio: 9 / 16;
-  border: 1px solid var(--line-invert); border-radius: var(--r-sm);
-  background: var(--ink-800);
-  display: flex; flex-direction: column; justify-content: space-between;
-  padding: var(--s-4);
-  transition: border-color var(--dur-fast) var(--ease), background var(--dur-fast) var(--ease);
+.offer__line {
+  font-size: var(--t-h1); line-height: var(--lh-heading);
+  letter-spacing: var(--tr-heading); font-weight: 500; text-wrap: balance;
 }
-/* Filtered-out frames leave the flow entirely, so the grid closes up instead of
-   leaving holes where things used to be. */
-.frame.is-off { display: none; }
-.frame:hover { border-color: var(--line-invert-strong); background: var(--ink-700); }
-.frame__tag { color: var(--text-invert-muted); opacity: 0.6; }
-.frame__label { color: var(--text-invert-muted); transition: color var(--dur-fast) var(--ease); }
-.frame:hover .frame__label { color: var(--text-invert); }
-
-/* A play glyph appears on hover, so an empty slot reads as a place a video will
-   go rather than as an image that failed to load. */
-.frame__play {
-  position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
-  width: 38px; height: 38px; border-radius: var(--r-sm);
-  border: 1px solid var(--line-invert-strong);
-  display: grid; place-items: center;
-  opacity: 0; transition: opacity var(--dur-fast) var(--ease);
-}
-.frame__play::before {
-  content: ""; width: 0; height: 0; margin-left: 2px;
-  border-left: 8px solid var(--text-invert-muted);
-  border-top: 5.5px solid transparent; border-bottom: 5.5px solid transparent;
-}
-.frame:hover .frame__play { opacity: 1; }
+.offer__line span { color: var(--text-invert-muted); }
+.offer__sub { font-size: var(--t-small); line-height: 1.65; color: var(--text-invert-muted); max-width: 44ch; }
 
 /* ---------- what we don't do ---------- */
 .dontdo { margin-top: var(--s-10); border-top: 1px solid var(--line); }
@@ -552,8 +603,10 @@ html:not(.js) .filters { display: none; }
 /* ---------- close + footer ---------- */
 .close__inner { max-width: 46rem; }
 .close__acts { margin-top: var(--s-10); display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-6); }
+/* The rule is drawn inside the shell's padding so it lines up with every
+   other hairline on the page instead of starting at the viewport edge. */
 .site-foot {
-  border-top: 1px solid var(--line-invert);
+  position: relative;
   padding-block: var(--s-8);
   display: flex; flex-wrap: wrap; gap: var(--s-4) var(--s-8);
   justify-content: space-between; align-items: baseline;
@@ -581,10 +634,20 @@ html:not(.js) .filters { display: none; }
 }
 
 /* ---------- booking page ---------- */
+.site-foot::before {
+  content: ""; position: absolute; top: 0;
+  left: var(--shell-x); right: var(--shell-x);
+  border-top: 1px solid var(--line-invert);
+}
+.site-foot .link-u { display: inline-block; padding-block: var(--s-3); }
 .book {
+  margin-top: var(--s-10);
   display: grid; gap: clamp(2.5rem, 5vw, 4.5rem);
   grid-template-columns: minmax(0, 1fr);
 }
+/* On a phone the calendar is the action, so it comes first. */
+@media (max-width: 899px) { .book > :last-child { order: -1; } }
+.book__fallback .link-u { display: inline-block; padding-block: var(--s-3); }
 .book > * { min-width: 0; }
 @media (min-width: 980px) {
   .book { grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); align-items: start; }
@@ -687,21 +750,13 @@ html:not(.js) .filters { display: none; }
   font-family: var(--font-mono); font-size: 0.6875rem;
   letter-spacing: 0.1em; text-transform: uppercase;
   background: none; border: 1px solid var(--line-invert); border-radius: var(--r-sm);
-  color: var(--text-invert-muted); padding: var(--s-2) var(--s-3); cursor: pointer;
+  color: var(--text-invert-muted); padding: var(--s-2) var(--s-4); min-height: 44px; min-width: 64px; cursor: pointer;
   transition: color var(--dur-fast) var(--ease), border-color var(--dur-fast) var(--ease);
 }
 .mqpause:hover, .mqpause:focus-visible { color: var(--text-invert); border-color: var(--line-invert-strong); }
 /* A real, visible pause mechanism for the running tickers -- not hover-only, so
    WCAG 2.2.2 holds for touch and keyboard as well. */
 .strip.is-paused .marquee__track { animation-play-state: paused; }
-
-/* Gallery filtering, staggered. Only the frames that survive the filter
-   animate, so switching reads as the grid re-forming rather than flashing. */
-.js .frame.is-pop { animation: frame-in var(--dur) var(--ease) both; animation-delay: var(--d, 0ms); }
-@keyframes frame-in {
-  from { opacity: 0; transform: translateY(10px) scale(0.98); }
-  to   { opacity: 1; transform: none; }
-}
 
 @media (prefers-reduced-motion: reduce) {
   /* The ticker keeps running, at half speed. Killing it turned the strip into a
@@ -710,8 +765,8 @@ html:not(.js) .filters { display: none; }
      is what changes. The pause control and hover/focus stay as the WCAG 2.2.2
      mechanism, so the motion is still fully stoppable. */
   .marquee__track { animation-duration: calc(var(--mq, 70s) * 2); }
-  .flip::after { animation-duration: 11s; }
-  /* Cards fade instead of rising and scaling. */
-  .js .frame.is-pop { animation-name: frame-fade; }
+  /* The render plays as a fade with no wipe and no travelling playhead. */
+  .flip { animation-name: clip-fade; }
+  .src__head-line { display: none; }
 }
-@keyframes frame-fade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes clip-fade { from { opacity: .25; } to { opacity: 1; } }

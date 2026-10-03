@@ -20,7 +20,7 @@ src/index.html          The page as a template, with <!-- @MARKER --> slots
 assets/css/tokens.css   Design tokens. Every colour and size comes from here
 assets/css/page.css     The page. Nothing here invents a value
 assets/js/math.js       The capacity calculator
-assets/js/app.js        Reveals, reading-progress, gallery filters, ticker pause
+assets/js/app.js        Reveals, reading-progress, ticker pause
 assets/js/book.js       Booking calendar (loads on /book/ only)
 assets/logos/           Platform marks, inlined as currentColor SVG at build time
 assets/fonts/           Self-hosted Geist / Newsreader / Departure Mono
@@ -40,7 +40,7 @@ The build does two things the page cannot do for itself:
 
 1. **Injects generated markup.** The twenty platform marks are inline SVG
    (they carry `fill="currentColor"`, so an `<img>` would render them black on
-   black), and the gallery is 20 frames across five formats. Hand-writing those
+   black), and the format ticker is generated from one list. Hand-writing those
    guarantees they drift.
 
 2. **Derives structured data from the rendered page.** The `FAQPage` schema is
@@ -73,8 +73,9 @@ which is the point. It deploys to the Influenzo Cloudflare account pinned in
   every mark is inline SVG, and there is no analytics. The only external origin
   anywhere is the scheduling iframe, and it loads on `/book/` only.
 - **Animations fail open.** With scripting off the page is complete and static:
-  reveals are inert, the progress line is zero-width, and the gallery shows all
-  20 frames. Without JavaScript the filter row is not rendered at all.
+  reveals are inert and the progress line is zero-width. The hero's default
+  state is the finished one: eight rendered clips on a marked episode. The
+  entrance only plays that state in, once, and never loops.
 - **Reduced motion shortens motion, it does not remove it.** The tickers run at
   half speed and the reveals drop their translate but keep their fade. Zeroing
   the durations turned the page into a frozen document with raw scrollbars on
@@ -86,8 +87,9 @@ which is the point. It deploys to the Influenzo Cloudflare account pinned in
 
 Stated plainly, because a public page should not overstate itself:
 
-- **The gallery is placeholder frames.** No client clips are published, and the
-  page says so on itself.
+- **There is no client reel.** Partners publish under their own names, so the
+  Formats section is a spec sheet plus the free three-clip sample, and the page
+  says why.
 - **"10× the videos" is a positioning claim, not a measured result.** One case
   study with before-and-after numbers would make it evidence.
 - **The USD ladder ($45 → $25, set 2026-10-03) is not yet checked against a

@@ -4,8 +4,8 @@ Two jobs the page cannot do for itself:
 
 1. Inject the generated markup — the platform marks are inline SVG (they carry
    `fill="currentColor"`, so an <img> would render them black on black), and the
-   gallery is 20 frames across five formats. Both are generated here rather than
-   hand-written, because hand-writing 20 frames guarantees they drift.
+   format ticker. Both are generated here rather than hand-written, because
+   hand-written copies drift.
 
 2. Derive the structured data FROM THE RENDERED PAGE. The FAQPage schema is
    parsed out of the actual <details> blocks and the Offer out of the actual
@@ -66,18 +66,6 @@ FORMATS = [
     "Clip packs", "Thumbnails",
 ]
 
-# kind, chip label, format tag. Every slot is a short-form native format, which
-# is why the whole wall can share one 9:16 tile.
-CATEGORIES = [
-    ("short",   "Short-form clips", "9:16"),
-    ("podcast", "Podcast clips",    "9:16"),
-    ("talking", "Talking head",     "9:16"),
-    ("motion",  "Motion graphics",  "9:16"),
-    ("avatar",  "Avatar content",   "9:16"),
-]
-PER_CATEGORY = 4
-
-
 # --------------------------------------------------------------- fragments
 def build_logos() -> str:
     out = []
@@ -92,35 +80,6 @@ def build_logos() -> str:
 
 def build_formats() -> str:
     return "".join(f'<span class="fmt">{html.escape(f)}</span>' for f in FORMATS)
-
-
-def build_filters() -> str:
-    total = len(CATEGORIES) * PER_CATEGORY
-    out = [
-        f'<button class="chip is-on" type="button" data-filter="all" '
-        f'aria-pressed="true">All<span class="chip__n">{total}</span></button>'
-    ]
-    for kind, label, _tag in CATEGORIES:
-        out.append(
-            f'<button class="chip" type="button" data-filter="{kind}" '
-            f'aria-pressed="false">{html.escape(label)}'
-            f'<span class="chip__n">{PER_CATEGORY}</span></button>'
-        )
-    return "".join(out)
-
-
-def build_frames() -> str:
-    out = []
-    for kind, label, tag in CATEGORIES:
-        for _ in range(PER_CATEGORY):
-            out.append(
-                f'<figure class="frame" data-kind="{kind}">'
-                f'<span class="frame__tag mono">{tag}</span>'
-                f'<span class="frame__play" aria-hidden="true"></span>'
-                f'<figcaption class="frame__label mono">{html.escape(label)}</figcaption>'
-                f"</figure>"
-            )
-    return "".join(out)
 
 
 # --------------------------------------------------------------- structured data
@@ -358,8 +317,6 @@ def main() -> None:
     page = (SRC / "index.html").read_text(encoding="utf-8")
     page = page.replace("<!-- @LOGOS -->", build_logos())
     page = page.replace("<!-- @FORMATS -->", build_formats())
-    page = page.replace("<!-- @FILTERS -->", build_filters())
-    page = page.replace("<!-- @FRAMES -->", build_frames())
     page = page.replace("<!-- @JSONLD -->", build_jsonld(page, base))
     if "<!-- @" in page:
         raise SystemExit("unconsumed marker left in src/index.html")
@@ -435,15 +392,12 @@ def main() -> None:
     # summary
     total = sum(f.stat().st_size for f in OUT.rglob("*") if f.is_file())
     q = chr(34)
-    n_frames = page.count("class=" + q + "frame" + q)
-    n_chips = page.count("class=" + q + "chip")
     n_marks = page.count("class=" + q + "mk" + q)
     n_formats = page.count("class=" + q + "fmt" + q)
     print(f"built -> {OUT}   {total / 1024:.0f} KB across "
           f"{sum(1 for f in OUT.rglob('*') if f.is_file())} files")
     print(f"  index.html   {(OUT / 'index.html').stat().st_size / 1024:.1f} KB")
     print(f"  json-ld blocks in index: {page.count('application/ld+json')}")
-    print(f"  frames: {n_frames}   chips: {n_chips}")
     print(f"  marks:  {n_marks}   formats: {n_formats}")
 
 
