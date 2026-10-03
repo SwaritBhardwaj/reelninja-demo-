@@ -221,8 +221,12 @@ negotiable.
 - Per short-form video, graduated like tax brackets (each rate covers only the
   videos inside its band): $45 (1\u201350), $40 (51\u2013150), $35 (151\u2013300),
   $30 (301\u2013500), $25 (501+).
-- Avatar videos, motion graphics, SaaS explainers, launch videos and long-form
-  edits are quoted per project.
+- Avatar videos: on the same ladder when the client provides avatar files,
+  +$20 a video when ReelNinja builds the avatar.
+- Launch videos from $500. Motion graphics, SaaS explainers and long-form edits
+  are quoted per project.
+- Free sample: the first clip within three working days of receiving footage,
+  all three within five.
 
 There is an interactive calculator on the site that runs the visitor's own
 numbers (creators, videos per creator, human editing minutes per video, editor

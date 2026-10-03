@@ -578,6 +578,7 @@ input[type="range"]::-moz-range-thumb {
 .spec__in { color: var(--text-invert-muted); font-size: var(--t-small); line-height: 1.6; max-width: 46ch; }
 .spec__price { text-align: right; white-space: nowrap; font-size: var(--t-small); font-weight: 500; padding-right: 0; }
 .spec__table tr.is-quoted .spec__price { color: var(--text-invert-muted); font-weight: 400; }
+.spec__plus { display: block; margin-top: 2px; font-size: 0.75rem; font-weight: 400; color: var(--text-invert-muted); white-space: normal; }
 .spec__table tbody tr { transition: background var(--dur-fast) var(--ease); }
 .spec__table tbody tr:hover { background: var(--ink-800); }
 @media (max-width: 760px) {

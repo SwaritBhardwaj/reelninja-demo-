@@ -51,10 +51,16 @@ ClickUp). Turnaround and revision rounds are what agencies check before signing.
 
 - Pricing (published, USD): $500 to $2,000 one-time Style System setup; then a
   graduated per-video ladder of $45 (1 to 50), $40 (51 to 150), $35 (151 to 300),
-  $30 (301 to 500), $25 (501+). Avatar videos, motion graphics, SaaS explainers,
-  launch videos and long-form edits are quoted per project.
-- Free sample first: three finished clips cut from the agency's own footage,
-  before any fee.
+  $30 (301 to 500), $25 (501+).
+- Avatar videos: same ladder when the client provides avatar files; +$20 a video
+  when ReelNinja builds the avatar. (Confirmed by Swarit 2026-10-03.)
+- Launch videos: from $500. (Confirmed 2026-10-03.)
+- Motion graphics, SaaS explainers, long-form edits: quoted per project. Motion
+  graphics pricing is undecided; do not publish a number.
+- Free sample first: three finished clips cut from the client's own footage,
+  before any fee. Turnaround promise: first clip within three working days of
+  receiving footage, all three within five (buffer for the first Style System
+  build and tooling outages).
 - Under 20 videos a month, a freelancer is usually the better fit, and the page
   says so.
 - No agency dashboard exists. Do not show or imply one.
@@ -68,6 +74,9 @@ ClickUp). Turnaround and revision rounds are what agencies check before signing.
 - Voice: direct, technical, founder-led, no fluff, no corporate language. Honest
   refusals ("what this is not") are part of the voice.
 - Never call the company a white-label agency on the page.
+- No exclusivity promise ("one partner per niche" was removed 2026-10-03). What
+  is promised instead: a client's Style System, footage and clips are never
+  shared with or reused for anyone else.
 
 ## Evidence on Hand
 
