@@ -162,9 +162,10 @@ def build_jsonld(page: str, base: str) -> str:
         if setup:
             graph[2]["offers"]["priceSpecification"] = {
                 "@type": "UnitPriceSpecification",
-                "name": "One-time Style System setup",
+                "name": "Style System setup (first brand free; each additional brand)",
                 "priceCurrency": "USD",
-                "description": strip_tags(setup.group(1)),
+                "description": strip_tags(setup.group(1)) + ". " + strip_tags(
+                    (re.search(r'<p class="ladder__desc">(.*?)</p>', page, re.S) or setup).group(1)),
             }
     if faq:
         graph.append({"@type": "FAQPage", "@id": url + "#faq", "mainEntity": faq})
@@ -215,9 +216,8 @@ negotiable.
 
 - Free sample first: three finished clips cut from the company's own footage,
   before any fee.
-- One-time Style System setup: $500 \u2013 $2,000, depending on how many
-  formats, brands, motion and avatar requirements there are. Quoted before any
-  commitment.
+- Style System setup: free for the first brand (the free sample is where the
+  style is learned); $120 one time for each additional brand.
 - Per short-form video, graduated like tax brackets (each rate covers only the
   videos inside its band): $45 (1\u201350), $40 (51\u2013150), $35 (151\u2013300),
   $30 (301\u2013500), $25 (501+).

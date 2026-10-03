@@ -49,7 +49,8 @@ ClickUp). Turnaround and revision rounds are what agencies check before signing.
 
 ## Capabilities and Constraints
 
-- Pricing (published, USD): $500 to $2,000 one-time Style System setup; then a
+- Pricing (published, USD): Style System setup free for the first brand, $120
+  one time for each additional brand (Swarit, 2026-10-03); then a
   graduated per-video ladder of $45 (1 to 50), $40 (51 to 150), $35 (151 to 300),
   $30 (301 to 500), $25 (501+).
 - Avatar videos: same ladder when the client provides avatar files; +$20 a video
@@ -66,6 +67,8 @@ ClickUp). Turnaround and revision rounds are what agencies check before signing.
 - No agency dashboard exists. Do not show or imply one.
 - No strategy, no client-facing contact, no promises of leads, views, followers
   or revenue.
+- Revisions: up to three rounds per video (Swarit, 2026-10-03). Never promise
+  "revisions until you approve".
 - Booking: Cal.com, swarit-influenzo/30min.
 
 ## Brand Commitments

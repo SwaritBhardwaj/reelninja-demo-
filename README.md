@@ -93,8 +93,8 @@ Stated plainly, because a public page should not overstate itself:
 - **"10× the videos" is a positioning claim, not a measured result.** One case
   study with before-and-after numbers would make it evidence.
 - **The USD ladder ($45 → $25, set 2026-10-03) is not yet checked against a
-  logged cost per video. The setup fee is a
-  range, quoted per client. The ladder lives in two places that must agree: the
+  logged cost per video. Setup: first brand
+  free, $120 per additional brand. The ladder lives in two places that must agree: the
   table in `src/index.html` and `LADDER` in `assets/js/math.js`.
 
 ## Credits

@@ -6,7 +6,7 @@
 
    Our side of the arithmetic uses exactly two published facts:
      1. the published per-video ladder
-     2. the published setup range
+     2. the published setup terms (first brand free, $120 per extra brand)
    It deliberately does NOT print our internal minutes or cost per video.
    Those are ours to manage; what the visitor pays is the ladder.
    ========================================================================== */
@@ -32,8 +32,7 @@
     { upTo: Infinity, price: 25, label: '501 +' }
   ];
   var HOURS_PER_MONTH = 160;   // one full-time editor
-  var SETUP_LOW = 500;         // published setup range, USD
-  var SETUP_HIGH = 2000;
+  var EXTRA_BRAND = 120;       // setup per additional brand, USD; the first is free
   var WORKABLE_AT = 20;        // below this a good freelancer usually wins
   var SAME_WITHIN = 0.02;      // within 2% reads as "about the same"
   var BREAK_SEARCH_MAX = 20000;
@@ -125,16 +124,6 @@
     };
   }
 
-  function months(n) {
-    if (n < 1) return 'under a month';
-    var r = Math.round(n * 10) / 10;
-    return r === 1 ? '1 month' : r + ' months';
-  }
-  function monthRange(lo, hi) {
-    var a = months(lo), b = months(hi);
-    return a === b ? a : a + ' to ' + b;
-  }
-
   function render() {
     var i = read();
     var r = compute(i);
@@ -186,16 +175,14 @@
         'lowest published rate. <strong>On cost alone, keep them. We would say the same on the call.</strong>';
     }
 
-    var setup = 'One-time setup of ' + money(SETUP_LOW) + ' – ' + money(SETUP_HIGH) +
-      ', quoted before you commit.';
+    var setup = 'No setup fee for your first brand; ' + money(EXTRA_BRAND) + ' for each additional one.';
     if (r.videos < WORKABLE_AT) {
       el.slot.textContent = num(r.videos) + ' videos a month is under ' + WORKABLE_AT +
         '. At this volume a good freelancer is usually the better call, and we would rather say that now than on a call.';
     } else if (r.save > 0 && !same) {
-      el.slot.textContent = setup + ' At this saving it pays for itself in ' +
-        monthRange(SETUP_LOW / r.save, SETUP_HIGH / r.save) + '.';
+      el.slot.textContent = setup + ' So the saving starts in month one.';
     } else {
-      el.slot.textContent = setup + ' At this volume it is an added cost, not something the savings pay back.';
+      el.slot.textContent = setup + ' Even so, at this volume the system does not save you money; what it buys is the editors you do not have to hire.';
     }
   }
 
