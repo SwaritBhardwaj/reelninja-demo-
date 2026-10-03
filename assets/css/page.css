@@ -203,88 +203,133 @@ p, li, dd { text-wrap: pretty; }
 }
 .defuse strong { color: var(--text-invert); font-weight: 500; }
 
-/* cascade: one raw episode, a playhead, eight clips.
-   The default state is the finished one: every clip rendered, every mark lit.
-   The entrance plays that state in once, in order, as the playhead crosses each
-   mark, then stops. Nothing loops, so there is nothing to pause. */
-.cascade { --sweep: 3600ms; --start: 450ms; --len: 3520; }
-.src { margin-bottom: var(--s-4); }
-.src__head {
-  display: flex; justify-content: space-between; gap: var(--s-4);
-  color: var(--text-invert-muted); margin-bottom: var(--s-2);
+/* cascade: four kinds of input, one style system, six kinds of output.
+   The default state is the finished one: every input lit, every format drawn.
+   The entrance plays that state in once, inputs first, then each format in
+   turn, and stops. Nothing loops, so there is nothing to pause. */
+.cascade { --t0: 300ms; --step: 260ms; --out0: 1500ms; --outstep: 340ms; }
+
+.ins { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-2); }
+.ins__label { color: var(--text-invert-muted); margin-right: var(--s-2); }
+.ins__chip {
+  font-size: 0.625rem; letter-spacing: 0.1em;
+  padding: 6px 10px; border-radius: var(--r-sm);
+  border: 1px solid var(--line-invert-strong); color: var(--text-invert);
+  animation: chip-on var(--dur) var(--ease) both;
+  animation-delay: calc(var(--t0) + var(--i) * var(--step));
 }
-.src__track {
-  position: relative; height: 40px;
-  border: 1px solid var(--line-invert); border-radius: var(--r-sm);
-  background: var(--ink-800); overflow: hidden;
+@keyframes chip-on { from { color: var(--text-invert-muted); border-color: var(--line-invert); } }
+
+.sys { display: flex; align-items: center; gap: var(--s-3); margin-block: var(--s-4); }
+.sys__line {
+  flex: 1; height: 1px; background: var(--line-invert-strong);
+  transform-origin: 0 50%;
+  animation: line-draw 600ms var(--ease) both; animation-delay: calc(var(--t0) + 4 * var(--step));
 }
-/* The waveform is a drawn SVG of one spoken episode: phrases, pauses, peaks. */
-.src__wave {
-  position: absolute; inset: 9px 0; width: 100%; height: calc(100% - 18px);
-  fill: rgba(250, 250, 250, 0.3);
-}
-.src__mark {
-  position: absolute; top: 0; bottom: 0; width: 2px;
-  left: calc(var(--at) / var(--len) * 100%);
-  background: var(--paper-100);
-  animation: mark-on 1ms linear both;
-  animation-delay: calc(var(--start) + var(--sweep) * var(--at) / var(--len));
-}
-@keyframes mark-on { from { background: var(--ink-600); } }
-.src__head-line {
-  position: absolute; top: 0; bottom: 0; left: 0; width: 1px;
-  background: var(--paper-100); box-shadow: 0 0 0 1px rgba(250,250,250,.12);
-  transform: translateX(-2px); opacity: 0;
-  animation: playhead var(--sweep) linear var(--start) both;
-}
-@keyframes playhead {
-  0%   { opacity: 1; left: 0; }
-  96%  { opacity: 1; }
-  100% { opacity: 0; left: 100%; }
+.sys__line:last-child { transform-origin: 100% 50%; }
+@keyframes line-draw { from { transform: scaleX(0); } }
+.sys__name {
+  color: var(--paper-100); padding: 6px 12px; border-radius: var(--r-sm);
+  background: var(--ink-700); border: 1px solid var(--paper-100);
+  font-size: 0.625rem; letter-spacing: 0.12em; white-space: nowrap;
+  animation: chip-on var(--dur) var(--ease) both; animation-delay: calc(var(--t0) + 4 * var(--step));
 }
 
-.cascade__grid {
-  display: grid; min-width: 0;
+/* Six formats in their real proportions: three verticals and a square on one
+   baseline, two widescreens under them. */
+.outs {
+  display: grid; gap: var(--s-3); min-width: 0;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: var(--s-3);
+  align-items: end;
 }
-@media (max-width: 620px) {
-  /* Two rows of four still fit a phone at 9:16 when the gap tightens, which
-     beats the old sideways-scrolling strip of empty tiles. */
-  .cascade__grid { gap: var(--s-2); }
-}
-.flip {
+.tile {
   position: relative; overflow: hidden;
-  aspect-ratio: 9 / 16;
-  border: 1px solid var(--line-invert-strong);
-  border-radius: var(--r-sm);
-  background: linear-gradient(180deg, var(--ink-700), var(--ink-800) 70%);
-  display: flex; flex-direction: column; justify-content: flex-end; gap: 5px;
-  padding: var(--s-3) var(--s-2) var(--s-3);
+  border: 1px solid var(--line-invert-strong); border-radius: var(--r-sm);
+  background: linear-gradient(180deg, var(--ink-700), var(--ink-800) 75%);
   animation: clip-render var(--dur-slow) var(--ease) both;
-  animation-delay: calc(var(--start, 450ms) + var(--sweep, 3600ms) * var(--at) / 3520);
+  animation-delay: calc(var(--out0) + var(--i) * var(--outstep));
 }
-.cascade .flip { --start: 450ms; --sweep: 3600ms; }
+.tile--v  { aspect-ratio: 9 / 16; }
+.tile--sq { aspect-ratio: 1 / 1; }
+.tile--w  { aspect-ratio: 16 / 9; grid-column: span 2; }
 @keyframes clip-render {
   from { background: var(--ink-800); border-color: var(--line-invert); clip-path: inset(0 0 100% 0); }
   to   { clip-path: inset(0); }
 }
-/* Burned-in caption lines, the most recognisable mark of a finished short. */
-.flip__cap {
-  display: block; height: 5px; width: 78%; margin-inline: auto;
-  border-radius: 1px; background: var(--paper-100);
+.tile__tag {
+  position: absolute; top: 7px; left: 8px; right: 8px; z-index: 1;
+  display: flex; flex-wrap: wrap; justify-content: space-between; gap: 2px 4px;
+  font-size: 0.5625rem; letter-spacing: 0.08em; color: var(--text-invert-muted);
+  white-space: nowrap;
 }
-.flip__cap--short { width: 52%; opacity: .7; margin-bottom: var(--s-3); }
-.flip__tc {
-  position: absolute; top: var(--s-2); left: var(--s-2);
-  font-size: 0.625rem; letter-spacing: 0.06em; color: var(--text-invert-muted);
+.tile__tag b { font-weight: 400; color: var(--text-invert); }
+
+/* glyphs: each format drawn by its most recognisable mark */
+.g-cap { display: block; height: 4px; width: 78%; margin-inline: auto; border-radius: 1px; background: var(--paper-100); }
+.g-cap--s { width: 52%; opacity: .7; margin-top: 4px; }
+.g-clip, .g-caps { position: absolute; left: 0; right: 0; bottom: 14%; }
+.g-wave {
+  display: block; height: 14px; width: 78%; margin: 0 auto 10px;
+  background: radial-gradient(circle at 50% 50%, var(--paper-100) 0 1px, transparent 1.5px) 0 50% / 5px 100% repeat-x;
+  -webkit-mask: linear-gradient(90deg, #000 0 8%, transparent 8% 12%, #000 12% 30%, transparent 30% 34%, #000 34% 70%, transparent 70% 74%, #000 74%);
+  mask: linear-gradient(90deg, #000 0 8%, transparent 8% 12%, #000 12% 30%, transparent 30% 34%, #000 34% 70%, transparent 70% 74%, #000 74%);
+  opacity: .55;
 }
-.flip__idx { font-family: var(--font-mono); font-size: 0.6875rem; color: var(--text-invert-muted); }
+.g-head { position: absolute; left: 50%; bottom: 0; width: 64%; height: 58%; transform: translateX(-50%); }
+.g-head__h {
+  position: absolute; left: 50%; top: 0; width: 42%; aspect-ratio: 1; transform: translateX(-50%);
+  border-radius: 50%; background: var(--ink-600); border: 1px solid rgba(250,250,250,.28);
+}
+.g-head__b {
+  position: absolute; left: 0; right: 0; bottom: 0; height: 52%;
+  border-radius: 48% 48% 0 0 / 60% 60% 0 0;
+  background: var(--ink-600); border: 1px solid rgba(250,250,250,.28); border-bottom: 0;
+}
+/* The avatar is the same figure drawn as a dashed outline: synthetic, not filmed. */
+.g-head--avatar .g-head__h, .g-head--avatar .g-head__b {
+  background: transparent; border: 1px dashed rgba(250,250,250,.55);
+}
+.g-head--avatar .g-head__b { border-bottom: 0; }
+.tile .g-caps { bottom: 12%; z-index: 1; }
+
+.g-motion { position: absolute; inset: 26% 14% 14%; display: flex; align-items: center; justify-content: space-around; }
+.g-m { display: block; background: var(--paper-100); animation: m-pop 700ms var(--ease) both; }
+.g-m--o { width: 26%; aspect-ratio: 1; border-radius: 50%; animation-delay: calc(var(--out0) + 3 * var(--outstep) + 200ms); }
+.g-m--s { width: 22%; aspect-ratio: 1; transform: rotate(45deg); background: transparent; border: 2px solid var(--paper-100); animation-delay: calc(var(--out0) + 3 * var(--outstep) + 320ms); }
+.g-m--b { width: 10%; height: 54%; border-radius: 1px; opacity: .7; animation-delay: calc(var(--out0) + 3 * var(--outstep) + 440ms); }
+@keyframes m-pop { from { opacity: 0; translate: 0 40%; } }
+
+.g-app {
+  position: absolute; inset: 26% 9% 12%;
+  border: 1px solid rgba(250,250,250,.35); border-radius: 3px; overflow: hidden;
+  display: grid; grid-template-columns: 22% 1fr; grid-template-rows: 14% 1fr;
+}
+.g-app__bar { grid-column: 1 / -1; border-bottom: 1px solid rgba(250,250,250,.25);
+  background: radial-gradient(circle, rgba(250,250,250,.5) 0 1.5px, transparent 2px) 4px 50% / 7px 100% repeat-x; background-size: 7px 100%; -webkit-mask: linear-gradient(90deg, #000 0 26px, transparent 26px); mask: linear-gradient(90deg, #000 0 26px, transparent 26px); }
+.g-app__side { border-right: 1px solid rgba(250,250,250,.2); background: rgba(250,250,250,.05); }
+.g-app__main { padding: 8% 10%; display: flex; flex-direction: column; gap: 9%; }
+.g-app__main span { display: block; height: 14%; border-radius: 1px; background: rgba(250,250,250,.22); }
+.g-app__main span:first-child { width: 60%; background: var(--paper-100); }
+.g-app__main span:nth-child(2) { width: 85%; }
+.g-app__main span:nth-child(3) { width: 45%; height: 24%; border: 1px solid var(--paper-100); background: transparent; }
+.g-app__cursor {
+  position: absolute; left: 58%; top: 62%; width: 0; height: 0;
+  border-left: 5px solid transparent; border-right: 5px solid transparent; border-bottom: 11px solid var(--paper-100);
+  transform: rotate(-28deg);
+  animation: cursor-in 900ms var(--ease) both; animation-delay: calc(var(--out0) + 4 * var(--outstep) + 300ms);
+}
+@keyframes cursor-in { from { translate: 60% 80%; opacity: 0; } }
+
+.g-launch { position: absolute; inset: 22% 12% 12%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8%; }
+.g-launch__t { display: block; width: 72%; height: 15%; border-radius: 1px; background: var(--paper-100); }
+.g-launch__t--s { width: 46%; height: 8%; opacity: .55; }
+.g-launch__cta { display: block; width: 28%; height: 16%; margin-top: 4%; border-radius: 2px; border: 1px solid var(--paper-100); }
+
 @media (max-width: 620px) {
-  .flip { padding: var(--s-2) 6px; gap: 3px; }
-  .flip__cap { height: 3px; }
-  .flip__tc { font-size: 0.5625rem; top: 6px; left: 6px; }
-  .flip__idx { font-size: 0.5625rem; }
+  .outs { gap: var(--s-2); }
+  .tile__tag { font-size: 0.5rem; top: 5px; left: 5px; right: 5px; }
+  .tile--v .tile__tag b, .tile--sq .tile__tag b { display: none; }
+  .ins__chip { font-size: 0.5625rem; padding: 5px 8px; }
 }
 .cascade__cap {
   margin-top: var(--s-5); display: flex; justify-content: space-between;
@@ -777,8 +822,8 @@ input[type="range"]::-moz-range-thumb {
      is what changes. The pause control and hover/focus stay as the WCAG 2.2.2
      mechanism, so the motion is still fully stoppable. */
   .marquee__track { animation-duration: calc(var(--mq, 70s) * 2); }
-  /* The render plays as a fade with no wipe and no travelling playhead. */
-  .flip { animation-name: clip-fade; }
-  .src__head-line { display: none; }
+  /* Formats fade in, with no wipe and nothing travelling. */
+  .tile { animation-name: clip-fade; }
+  .g-m, .g-app__cursor, .sys__line { animation: none; }
 }
 @keyframes clip-fade { from { opacity: .25; } to { opacity: 1; } }
