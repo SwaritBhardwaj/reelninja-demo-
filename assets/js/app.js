@@ -7,7 +7,7 @@
      4. filter the work gallery by format
      5. pause/play the running tickers
    Every one fails open. With no JS the page is complete: the reveal attributes
-   are inert, the progress line is 0-width, the gallery shows all 24 frames and
+   are inert, the progress line is 0-width, the gallery shows all 20 frames and
    the chip row is not even rendered (see the `html:not(.js)` rule in page.css).
    No library, no smooth-scroll hijack.
    ========================================================================== */

@@ -19,7 +19,7 @@ makes the system better at that company's style.
 
 - Production infrastructure, not an agency and not a tool the client runs.
 - Built for content companies running three or more creators, channels or
-  shows, needing fifty or more short-form pieces a month between them.
+  shows, needing twenty or more short-form pieces a month between them.
 - The client's clients never deal with ReelNinja. Work ships under the client's
   own name.
 
@@ -46,7 +46,7 @@ hourly cost) against this published ladder.
 
 ReelNinja is not an agency and does not find clients, does not do strategy,
 positioning or creative direction, and does not provide legal advice. Below
-roughly 50 videos a month a good freelancer is usually the better fit. No leads, clients, revenue, views or followers
+roughly 20 videos a month a good freelancer is usually the better fit. No leads, clients, revenue, views or followers
 are promised.
 
 ## Pages

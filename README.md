@@ -40,7 +40,7 @@ The build does two things the page cannot do for itself:
 
 1. **Injects generated markup.** The twenty platform marks are inline SVG
    (they carry `fill="currentColor"`, so an `<img>` would render them black on
-   black), and the gallery is 24 frames across six formats. Hand-writing those
+   black), and the gallery is 20 frames across five formats. Hand-writing those
    guarantees they drift.
 
 2. **Derives structured data from the rendered page.** The `FAQPage` schema is
@@ -74,7 +74,7 @@ flag and log in to publish to your own account.
   anywhere is the scheduling iframe, and it loads on `/book/` only.
 - **Animations fail open.** With scripting off the page is complete and static:
   reveals are inert, the progress line is zero-width, and the gallery shows all
-  24 frames. Without JavaScript the filter row is not rendered at all.
+  20 frames. Without JavaScript the filter row is not rendered at all.
 - **Reduced motion shortens motion, it does not remove it.** The tickers run at
   half speed and the reveals drop their translate but keep their fade. Zeroing
   the durations turned the page into a frozen document with raw scrollbars on

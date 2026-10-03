@@ -34,7 +34,7 @@
   var HOURS_PER_MONTH = 160;   // one full-time editor
   var SETUP_LOW = 500;         // published setup range, USD
   var SETUP_HIGH = 2000;
-  var WORKABLE_AT = 50;        // below this a good freelancer usually wins
+  var WORKABLE_AT = 20;        // below this a good freelancer usually wins
   var SAME_WITHIN = 0.02;      // within 2% reads as "about the same"
   var BREAK_SEARCH_MAX = 20000;
 

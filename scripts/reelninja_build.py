@@ -4,8 +4,8 @@ Two jobs the page cannot do for itself:
 
 1. Inject the generated markup — the platform marks are inline SVG (they carry
    `fill="currentColor"`, so an <img> would render them black on black), and the
-   gallery is 24 frames across six formats. Both are generated here rather than
-   hand-written, because hand-writing 24 frames guarantees they drift.
+   gallery is 20 frames across five formats. Both are generated here rather than
+   hand-written, because hand-writing 20 frames guarantees they drift.
 
 2. Derive the structured data FROM THE RENDERED PAGE. The FAQPage schema is
    parsed out of the actual <details> blocks and the Offer out of the actual
@@ -71,7 +71,6 @@ FORMATS = [
 CATEGORIES = [
     ("short",   "Short-form clips", "9:16"),
     ("podcast", "Podcast clips",    "9:16"),
-    ("founder", "Founder and UGC",  "9:16"),
     ("talking", "Talking head",     "9:16"),
     ("motion",  "Motion graphics",  "9:16"),
     ("avatar",  "Avatar content",   "9:16"),
@@ -240,7 +239,7 @@ makes the system better at that company's style.
 
 - Production infrastructure, not an agency and not a tool the client runs.
 - Built for content companies running three or more creators, channels or
-  shows, needing fifty or more short-form pieces a month between them.
+  shows, needing twenty or more short-form pieces a month between them.
 - The client's clients never deal with ReelNinja. Work ships under the client's
   own name.
 
@@ -267,7 +266,7 @@ hourly cost) against this published ladder.
 
 ReelNinja is not an agency and does not find clients, does not do strategy,
 positioning or creative direction, and does not provide legal advice. Below
-roughly 50 videos a month a good freelancer is usually the better fit. No leads, clients, revenue, views or followers
+roughly 20 videos a month a good freelancer is usually the better fit. No leads, clients, revenue, views or followers
 are promised.
 
 ## Pages
