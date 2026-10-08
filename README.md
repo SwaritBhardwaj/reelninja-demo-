@@ -2,9 +2,9 @@
 
 Landing page for **ReelNinja** — production infrastructure for content companies.
 
-> 10× the videos. Same editing team.
+> 10× the videos. No new hires.
 
-**Live:** <https://reelninja.visual-language-4c9.workers.dev>
+**Live:** <https://reelninja.numerous-breadfruit.workers.dev>
 
 The page sells a production *system*, not a clip service. An agency hands over
 how it edits once, that becomes a Style System, and from then on output stops
@@ -20,7 +20,7 @@ src/index.html          The page as a template, with <!-- @MARKER --> slots
 assets/css/tokens.css   Design tokens. Every colour and size comes from here
 assets/css/page.css     The page. Nothing here invents a value
 assets/js/math.js       The capacity calculator
-assets/js/app.js        Reveals, reading-progress, gallery filters, ticker pause
+assets/js/app.js        Reveals, reading-progress, ticker pause
 assets/js/book.js       Booking calendar (loads on /book/ only)
 assets/logos/           Platform marks, inlined as currentColor SVG at build time
 assets/fonts/           Self-hosted Geist / Newsreader / Departure Mono
@@ -40,7 +40,7 @@ The build does two things the page cannot do for itself:
 
 1. **Injects generated markup.** The twenty platform marks are inline SVG
    (they carry `fill="currentColor"`, so an `<img>` would render them black on
-   black), and the gallery is 24 frames across six formats. Hand-writing those
+   black), and the format ticker is generated from one list. Hand-writing those
    guarantees they drift.
 
 2. **Derives structured data from the rendered page.** The `FAQPage` schema is
@@ -56,13 +56,13 @@ immutably without a deploy going unnoticed.
 ## Deploy
 
 ```bash
-npx wrangler deploy --temporary
+npx wrangler deploy
 ```
 
 `wrangler.toml` serves `./site` as static assets — there is no Worker script,
-which is the point. `--temporary` publishes to a throwaway preview account with
-no login, so the URL is a shareable link rather than a real deployment. Drop the
-flag and log in to publish to your own account.
+which is the point. It deploys to the Influenzo Cloudflare account pinned in
+`wrangler.toml`; authenticate with `npx wrangler login` or a
+`CLOUDFLARE_API_TOKEN` that has Workers edit rights.
 
 ## Design notes
 
@@ -73,8 +73,9 @@ flag and log in to publish to your own account.
   every mark is inline SVG, and there is no analytics. The only external origin
   anywhere is the scheduling iframe, and it loads on `/book/` only.
 - **Animations fail open.** With scripting off the page is complete and static:
-  reveals are inert, the progress line is zero-width, and the gallery shows all
-  24 frames. Without JavaScript the filter row is not rendered at all.
+  reveals are inert and the progress line is zero-width. The hero's default
+  state is the finished one: eight rendered clips on a marked episode. The
+  entrance only plays that state in, once, and never loops.
 - **Reduced motion shortens motion, it does not remove it.** The tickers run at
   half speed and the reveals drop their translate but keep their fade. Zeroing
   the durations turned the page into a frozen document with raw scrollbars on
@@ -86,15 +87,15 @@ flag and log in to publish to your own account.
 
 Stated plainly, because a public page should not overstate itself:
 
-- **The booking calendar is a placeholder.** `/book/` points at the handle
-  `reelninja/20min`, which is not a live event, so the embed resolves empty.
-  Swap the handle in `assets/js/book.js` and in the fallback link in
-  `book/index.html`.
-- **The gallery is placeholder frames.** No client clips are published, and the
-  page says so on itself.
+- **There is no client reel.** Partners publish under their own names, so the
+  Formats section is a spec sheet plus the free three-clip sample, and the page
+  says why.
 - **"10× the videos" is a positioning claim, not a measured result.** One case
   study with before-and-after numbers would make it evidence.
-- **The setup fee and volume tiers are indicative ranges**, not quoted prices.
+- **The USD ladder ($45 → $25, set 2026-10-03) is not yet checked against a
+  logged cost per video. Setup: first brand
+  free, $120 per additional brand. The ladder lives in two places that must agree: the
+  table in `src/index.html` and `LADDER` in `assets/js/math.js`.
 
 ## Credits
 

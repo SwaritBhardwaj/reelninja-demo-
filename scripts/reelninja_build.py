@@ -4,8 +4,8 @@ Two jobs the page cannot do for itself:
 
 1. Inject the generated markup — the platform marks are inline SVG (they carry
    `fill="currentColor"`, so an <img> would render them black on black), and the
-   gallery is 24 frames across six formats. Both are generated here rather than
-   hand-written, because hand-writing 24 frames guarantees they drift.
+   format ticker. Both are generated here rather than hand-written, because
+   hand-written copies drift.
 
 2. Derive the structured data FROM THE RENDERED PAGE. The FAQPage schema is
    parsed out of the actual <details> blocks and the Offer out of the actual
@@ -61,23 +61,10 @@ PLATFORM_ORDER = [
 
 FORMATS = [
     "9:16 vertical", "1:1 square", "4:5 feed", "16:9 long-form",
-    "Captions burned in", "Hook in 3 seconds", "Cold open", "B-roll cut",
-    "Colour matched", "Sound designed", "End card", "Chaptered",
-    "Clip packs", "Thumbnails",
+    "Talking head", "Infotainment", "Avatar video", "Motion graphics",
+    "SaaS explainer", "Launch video", "Captions burned in", "Hook in 3 seconds",
+    "B-roll cut", "Colour matched", "Sound designed", "End card", "Clip packs",
 ]
-
-# kind, chip label, format tag. Every slot is a short-form native format, which
-# is why the whole wall can share one 9:16 tile.
-CATEGORIES = [
-    ("short",   "Short-form clips", "9:16"),
-    ("podcast", "Podcast clips",    "9:16"),
-    ("founder", "Founder and UGC",  "9:16"),
-    ("talking", "Talking head",     "9:16"),
-    ("motion",  "Motion graphics",  "9:16"),
-    ("avatar",  "Avatar content",   "9:16"),
-]
-PER_CATEGORY = 4
-
 
 # --------------------------------------------------------------- fragments
 def build_logos() -> str:
@@ -93,35 +80,6 @@ def build_logos() -> str:
 
 def build_formats() -> str:
     return "".join(f'<span class="fmt">{html.escape(f)}</span>' for f in FORMATS)
-
-
-def build_filters() -> str:
-    total = len(CATEGORIES) * PER_CATEGORY
-    out = [
-        f'<button class="chip is-on" type="button" data-filter="all" '
-        f'aria-pressed="true">All<span class="chip__n">{total}</span></button>'
-    ]
-    for kind, label, _tag in CATEGORIES:
-        out.append(
-            f'<button class="chip" type="button" data-filter="{kind}" '
-            f'aria-pressed="false">{html.escape(label)}'
-            f'<span class="chip__n">{PER_CATEGORY}</span></button>'
-        )
-    return "".join(out)
-
-
-def build_frames() -> str:
-    out = []
-    for kind, label, tag in CATEGORIES:
-        for _ in range(PER_CATEGORY):
-            out.append(
-                f'<figure class="frame" data-kind="{kind}">'
-                f'<span class="frame__tag mono">{tag}</span>'
-                f'<span class="frame__play" aria-hidden="true"></span>'
-                f'<figcaption class="frame__label mono">{html.escape(label)}</figcaption>'
-                f"</figure>"
-            )
-    return "".join(out)
 
 
 # --------------------------------------------------------------- structured data
@@ -143,17 +101,20 @@ def build_jsonld(page: str, base: str) -> str:
     ]
 
     setup = re.search(r'<p class="ladder__amt">(.*?)</p>', page, re.S)
-    bands = re.findall(
-        r"<tr[^>]*><td>([^<]*?(?:&ndash;|&mdash;|-)[^<]*?)</td><td>([^<]*?)</td></tr>", page
-    )
-    prices = [int(p) for p in re.findall(r"&#8377;([\d,]+)", page) if int(p.replace(",", "")) < 10000]
+    # Read bands and prices from the ladder table only, so the setup fee and
+    # any other dollar figure on the page can never leak into the per-video offer.
+    ladder = re.search(r'<table class="ladder__table">(.*?)</table>', page, re.S)
+    bands = re.findall(r"<tr[^>]*><td>([^<]*?)</td><td>([^<]*?)</td></tr>",
+                       ladder.group(1)) if ladder else []
+    prices = [int(m.group(1).replace(",", ""))
+              for _, p in bands if (m := re.search(r"\$([\d,]+)", p))]
 
-    offers: dict = {"@type": "AggregateOffer", "priceCurrency": "INR"}
+    offers: dict = {"@type": "AggregateOffer", "priceCurrency": "USD"}
     if prices:
         offers |= {"lowPrice": str(min(prices)), "highPrice": str(max(prices)),
                    "offerCount": str(len(bands) or len(prices))}
     if bands:
-        offers["description"] = "Per video, by monthly volume: " + "; ".join(
+        offers["description"] = "Per short-form video, graduated by monthly volume: " + "; ".join(
             f"{strip_tags(b)} {strip_tags(p)}" for b, p in bands
         ) + "."
 
@@ -167,7 +128,7 @@ def build_jsonld(page: str, base: str) -> str:
             "logo": {"@type": "ImageObject", "url": url + "assets/icons/icon-512.png",
                      "width": 512, "height": 512},
             "image": url + "og.png",
-            "slogan": "10\u00d7 the videos. Same editing team.",
+            "slogan": "10\u00d7 the videos. No new hires.",
             "description": ("ReelNinja turns a content company's editing workflow into a "
                             "production system, so output stops being capped by how many "
                             "editors the company can hire."),
@@ -187,7 +148,7 @@ def build_jsonld(page: str, base: str) -> str:
             "@type": "Service",
             "@id": url + "#service",
             "name": "Video production system",
-            "serviceType": "Video production infrastructure for content companies",
+            "serviceType": "Short-form video production, avatar videos, motion graphics, SaaS explainers and launch videos",
             "provider": {"@id": url + "#org"},
             "areaServed": "Worldwide",
             "description": ("A Style System extracted from a company's own published work, "
@@ -201,9 +162,10 @@ def build_jsonld(page: str, base: str) -> str:
         if setup:
             graph[2]["offers"]["priceSpecification"] = {
                 "@type": "UnitPriceSpecification",
-                "name": "One-time Style System setup",
-                "priceCurrency": "INR",
-                "description": strip_tags(setup.group(1)),
+                "name": "Style System setup (first brand free; each additional brand)",
+                "priceCurrency": "USD",
+                "description": strip_tags(setup.group(1)) + ". " + strip_tags(
+                    (re.search(r'<p class="ladder__desc">(.*?)</p>', page, re.S) or setup).group(1)),
             }
     if faq:
         graph.append({"@type": "FAQPage", "@id": url + "#faq", "mainEntity": faq})
@@ -222,12 +184,18 @@ def build_llms(base: str) -> str:
 > editing workflow into a production system, so output stops being capped by how
 > many editors it can hire.
 
-ReelNinja builds a **Style System** from videos a company has already published:
+ReelNinja makes short-form video at volume (clips from any long-form footage,
+talking-head and infotainment shorts, podcast clips) and project work (AI avatar
+videos, motion graphics, SaaS explainers and launch videos).
+
+For short-form, ReelNinja builds a **Style System** from videos a company has
+already published:
 type, colour, caption style, hook structure, pacing, transitions, B-roll rules,
 sound and end cards. Raw footage then goes through that system in production,
-with a human QA pass signing off on every frame before anything ships. The
+with a human QA pass signing off on every video before anything ships. The
 company keeps its clients, its strategy and its creative direction. ReelNinja
-owns production and never speaks to the end client.
+handles production and never speaks to the end client. Finals are delivered
+unbranded into the tools the company already uses.
 
 The per-video rate falls as monthly volume rises, because every video produced
 makes the system better at that company's style.
@@ -235,21 +203,30 @@ makes the system better at that company's style.
 ## What it is
 
 - Production infrastructure, not an agency and not a tool the client runs.
-- Built for content companies running five or more creators, channels or shows,
-  each needing twenty to a hundred pieces a month.
+- Built for teams that make content for founders, creators, brands or shows,
+  their own or their clients', and need twenty or more short-form pieces a
+  month, or a launch video or explainer that has to land.
 - The client's clients never deal with ReelNinja. Work ships under the client's
   own name.
 
 ## Pricing
 
-All prices in Indian rupees (INR), published rather than negotiable.
+All prices in US dollars (USD). Per-video rates are published rather than
+negotiable.
 
-- One-time Style System setup: \u20b950,000 \u2013 \u20b92,00,000, depending on how
-  many formats, brands, motion and avatar requirements there are. Quoted before
-  any commitment.
-- Per video, by monthly volume: \u20b9500 (1\u201320), \u20b9400 (21\u201350),
-  \u20b9300 (51\u2013100), \u20b9200 (101\u2013250), from \u20b9150 (251+).
-- Avatar, motion-graphics and long-form edits are quoted separately.
+- Free sample first: three finished clips cut from the company's own footage,
+  before any fee.
+- Style System setup: free for the first brand (the free sample is where the
+  style is learned); $120 one time for each additional brand.
+- Per short-form video, graduated like tax brackets (each rate covers only the
+  videos inside its band): $45 (1\u201350), $40 (51\u2013150), $35 (151\u2013300),
+  $30 (301\u2013500), $25 (501+).
+- Avatar videos: on the same ladder when the client provides avatar files,
+  +$20 a video when ReelNinja builds the avatar.
+- Launch videos from $500. Motion graphics, SaaS explainers and long-form edits
+  are quoted per project.
+- Free sample: the first clip within three working days of receiving footage,
+  all three within five.
 
 There is an interactive calculator on the site that runs the visitor's own
 numbers (creators, videos per creator, human editing minutes per video, editor
@@ -259,15 +236,14 @@ hourly cost) against this published ladder.
 
 ReelNinja is not an agency and does not find clients, does not do strategy,
 positioning or creative direction, and does not provide legal advice. Below
-roughly 100 videos a month the setup does not pay for itself and the answer is
-that ReelNinja is the wrong fit. No leads, clients, revenue, views or followers
+roughly 20 videos a month a good freelancer is usually the better fit. No leads, clients, revenue, views or followers
 are promised.
 
 ## Pages
 
 - [Home]({url}): positioning, the three-layer system, the calculator, the
   published pricing ladder and the FAQ.
-- [Book a 20-minute call]({url}book/): the scheduling surface.
+- [Book a 30-minute call]({url}book/): the scheduling surface.
 """
 
 
@@ -352,8 +328,6 @@ def main() -> None:
     page = (SRC / "index.html").read_text(encoding="utf-8")
     page = page.replace("<!-- @LOGOS -->", build_logos())
     page = page.replace("<!-- @FORMATS -->", build_formats())
-    page = page.replace("<!-- @FILTERS -->", build_filters())
-    page = page.replace("<!-- @FRAMES -->", build_frames())
     page = page.replace("<!-- @JSONLD -->", build_jsonld(page, base))
     if "<!-- @" in page:
         raise SystemExit("unconsumed marker left in src/index.html")
@@ -429,15 +403,12 @@ def main() -> None:
     # summary
     total = sum(f.stat().st_size for f in OUT.rglob("*") if f.is_file())
     q = chr(34)
-    n_frames = page.count("class=" + q + "frame" + q)
-    n_chips = page.count("class=" + q + "chip")
     n_marks = page.count("class=" + q + "mk" + q)
     n_formats = page.count("class=" + q + "fmt" + q)
     print(f"built -> {OUT}   {total / 1024:.0f} KB across "
           f"{sum(1 for f in OUT.rglob('*') if f.is_file())} files")
     print(f"  index.html   {(OUT / 'index.html').stat().st_size / 1024:.1f} KB")
     print(f"  json-ld blocks in index: {page.count('application/ld+json')}")
-    print(f"  frames: {n_frames}   chips: {n_chips}")
     print(f"  marks:  {n_marks}   formats: {n_formats}")
 
 
