@@ -86,8 +86,9 @@ ClickUp). Turnaround and revision rounds are what agencies check before signing.
 - No client clips are cleared for publication. Do not fabricate clients,
   testimonials, logos, case studies or results.
 - "10x the videos" is a positioning claim, not a measured result.
-- One active client (LaunchPilot / Mentogram); work not cleared for public use
-  (inferred).
+- One active retainer client (a startup school). Do not name the client
+  anywhere public until Swarit says so (2026-10-08); work not cleared for
+  public use.
 
 ## Product Principles
 
