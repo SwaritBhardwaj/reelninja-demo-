@@ -224,8 +224,11 @@ negotiable.
   video); Growth, 60 videos for $1,800 ($30 a video); Scale, 120 videos for
   $3,000 ($25 a video). Month to month, or 10% off on a three-month term.
   Videos over a package are billed at that package's per-video rate.
-- Delivery: weekly batches, each delivered a week before it is due to post.
-  Priority turnaround is available at a higher rate.
+- Delivery: weekly batches. Footage (raw footage, one inspiration video, the
+  script) arrives by Thursday; the batch is delivered the following Monday, a
+  buffer week before it posts. Priority turnaround per video: 72 hours +$15,
+  24-48 hours +$30, same day +$60.
+- A new style (fresh look, or another brand): $120 one time.
 - Keep-rate guarantee: if fewer than 6 of 10 videos in a batch are usable, the
   batch is re-cut free or refunded.
 - Avatar videos: count toward the package when the client provides avatar
