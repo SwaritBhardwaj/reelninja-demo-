@@ -531,9 +531,12 @@ input[type="range"]::-moz-range-thumb {
   font-size: var(--t-mono); font-family: var(--font-mono);
   letter-spacing: var(--tr-mono); text-transform: uppercase; padding-bottom: var(--s-3);
 }
-.ladder__table th:last-child, .ladder__table td:last-child {
-  text-align: right; font-variant-numeric: tabular-nums;
+.ladder__table { width: 100%; }
+.ladder__table th + th, .ladder__table td + td {
+  text-align: right; font-variant-numeric: tabular-nums; padding-left: var(--s-3);
 }
+.ladder__table th:first-child, .ladder__table td:first-child { padding-left: var(--s-3); }
+.ladder__table th:last-child, .ladder__table td:last-child { padding-right: var(--s-3); }
 .ladder__table td:first-child { color: var(--text-muted); font-size: var(--t-small); }
 .ladder__table td:last-child { font-size: 1.0625rem; font-weight: 500; }
 .ladder__table tr.is-best td { background: var(--paper-300); }

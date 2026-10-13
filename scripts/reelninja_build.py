@@ -101,21 +101,23 @@ def build_jsonld(page: str, base: str) -> str:
     ]
 
     setup = re.search(r'<p class="ladder__amt">(.*?)</p>', page, re.S)
-    # Read bands and prices from the ladder table only, so the setup fee and
-    # any other dollar figure on the page can never leak into the per-video offer.
+    # Read the packages from the pricing table only, so the setup fee and any
+    # other dollar figure on the page can never leak into the offer.
     ladder = re.search(r'<table class="ladder__table">(.*?)</table>', page, re.S)
-    bands = re.findall(r"<tr[^>]*><td>([^<]*?)</td><td>([^<]*?)</td></tr>",
-                       ladder.group(1)) if ladder else []
+    packages = re.findall(
+        r"<tr[^>]*><td>([^<]*?)</td><td>([^<]*?)</td><td>([^<]*?)</td><td>([^<]*?)</td></tr>",
+        ladder.group(1)) if ladder else []
     prices = [int(m.group(1).replace(",", ""))
-              for _, p in bands if (m := re.search(r"\$([\d,]+)", p))]
+              for _, _, p, _ in packages if (m := re.search(r"\$([\d,]+)", p))]
 
     offers: dict = {"@type": "AggregateOffer", "priceCurrency": "USD"}
     if prices:
         offers |= {"lowPrice": str(min(prices)), "highPrice": str(max(prices)),
-                   "offerCount": str(len(bands) or len(prices))}
-    if bands:
-        offers["description"] = "Per short-form video, graduated by monthly volume: " + "; ".join(
-            f"{strip_tags(b)} {strip_tags(p)}" for b, p in bands
+                   "offerCount": str(len(packages) or len(prices))}
+    if packages:
+        offers["description"] = "Monthly packages of short-form videos: " + "; ".join(
+            f"{strip_tags(n)}, {strip_tags(v)} videos, {strip_tags(p)} a month ({strip_tags(u)} a video)"
+            for n, v, p, u in packages
         ) + "."
 
     graph = [
@@ -211,18 +213,23 @@ makes the system better at that company's style.
 
 ## Pricing
 
-All prices in US dollars (USD). Per-video rates are published rather than
+All prices in US dollars (USD). Prices are published rather than
 negotiable.
 
 - Free sample first: three finished clips cut from the company's own footage,
   before any fee.
 - Style System setup: free for the first brand (the free sample is where the
   style is learned); $120 one time for each additional brand.
-- Per short-form video, graduated like tax brackets (each rate covers only the
-  videos inside its band): $45 (1\u201350), $40 (51\u2013150), $35 (151\u2013300),
-  $30 (301\u2013500), $25 (501+).
-- Avatar videos: on the same ladder when the client provides avatar files,
-  +$20 a video when ReelNinja builds the avatar.
+- Monthly packages of short-form videos: Starter, 30 videos for $1,050 ($35 a
+  video); Growth, 60 videos for $1,800 ($30 a video); Scale, 120 videos for
+  $3,000 ($25 a video). Month to month, or 10% off on a three-month term.
+  Videos over a package are billed at that package's per-video rate.
+- Delivery: weekly batches, each delivered a week before it is due to post.
+  Priority turnaround is available at a higher rate.
+- Keep-rate guarantee: if fewer than 6 of 10 videos in a batch are usable, the
+  batch is re-cut free or refunded.
+- Avatar videos: count toward the package when the client provides avatar
+  files, +$20 a video when ReelNinja builds the avatar.
 - Launch videos from $500. Motion graphics, SaaS explainers and long-form edits
   are quoted per project.
 - Free sample: the first clip within three working days of receiving footage,
@@ -230,7 +237,7 @@ negotiable.
 
 There is an interactive calculator on the site that runs the visitor's own
 numbers (creators, videos per creator, human editing minutes per video, editor
-hourly cost) against this published ladder.
+hourly cost) against these published packages.
 
 ## Limits
 
@@ -242,7 +249,7 @@ are promised.
 ## Pages
 
 - [Home]({url}): positioning, the three-layer system, the calculator, the
-  published pricing ladder and the FAQ.
+  published packages and the FAQ.
 - [Book a 30-minute call]({url}book/): the scheduling surface.
 """
 

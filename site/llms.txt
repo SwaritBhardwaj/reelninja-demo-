@@ -31,18 +31,23 @@ makes the system better at that company's style.
 
 ## Pricing
 
-All prices in US dollars (USD). Per-video rates are published rather than
+All prices in US dollars (USD). Prices are published rather than
 negotiable.
 
 - Free sample first: three finished clips cut from the company's own footage,
   before any fee.
 - Style System setup: free for the first brand (the free sample is where the
   style is learned); $120 one time for each additional brand.
-- Per short-form video, graduated like tax brackets (each rate covers only the
-  videos inside its band): $45 (1–50), $40 (51–150), $35 (151–300),
-  $30 (301–500), $25 (501+).
-- Avatar videos: on the same ladder when the client provides avatar files,
-  +$20 a video when ReelNinja builds the avatar.
+- Monthly packages of short-form videos: Starter, 30 videos for $1,050 ($35 a
+  video); Growth, 60 videos for $1,800 ($30 a video); Scale, 120 videos for
+  $3,000 ($25 a video). Month to month, or 10% off on a three-month term.
+  Videos over a package are billed at that package's per-video rate.
+- Delivery: weekly batches, each delivered a week before it is due to post.
+  Priority turnaround is available at a higher rate.
+- Keep-rate guarantee: if fewer than 6 of 10 videos in a batch are usable, the
+  batch is re-cut free or refunded.
+- Avatar videos: count toward the package when the client provides avatar
+  files, +$20 a video when ReelNinja builds the avatar.
 - Launch videos from $500. Motion graphics, SaaS explainers and long-form edits
   are quoted per project.
 - Free sample: the first clip within three working days of receiving footage,
@@ -50,7 +55,7 @@ negotiable.
 
 There is an interactive calculator on the site that runs the visitor's own
 numbers (creators, videos per creator, human editing minutes per video, editor
-hourly cost) against this published ladder.
+hourly cost) against these published packages.
 
 ## Limits
 
@@ -61,6 +66,6 @@ are promised.
 
 ## Pages
 
-- [Home](https://reelninja.numerous-breadfruit.workers.dev/): positioning, the three-layer system, the calculator, the
-  published pricing ladder and the FAQ.
-- [Book a 30-minute call](https://reelninja.numerous-breadfruit.workers.dev/book/): the scheduling surface.
+- [Home](https://reelninja.pages.dev/): positioning, the three-layer system, the calculator, the
+  published packages and the FAQ.
+- [Book a 30-minute call](https://reelninja.pages.dev/book/): the scheduling surface.

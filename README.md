@@ -92,10 +92,10 @@ Stated plainly, because a public page should not overstate itself:
   says why.
 - **"10× the videos" is a positioning claim, not a measured result.** One case
   study with before-and-after numbers would make it evidence.
-- **The USD ladder ($45 → $25, set 2026-10-03) is not yet checked against a
-  logged cost per video. Setup: first brand
-  free, $120 per additional brand. The ladder lives in two places that must agree: the
-  table in `src/index.html` and `LADDER` in `assets/js/math.js`.
+- **Pricing is monthly packages (set 2026-10-13):** Starter 30 / $1,050, Growth
+  60 / $1,800, Scale 120 / $3,000; setup free for the first brand, $120 per
+  additional brand. The packages live in two places that must agree: the table in
+  `src/index.html` and `PACKAGES` in `assets/js/math.js`.
 
 ## Credits
 
