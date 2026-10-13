@@ -57,8 +57,13 @@ ClickUp). Turnaround and revision rounds are what agencies check before signing.
   ($35), Growth 60 videos $1,800 ($30, recommended), Scale 120 videos $3,000
   ($25). Month to month, or 10% off on a 3-month term. Videos over a package are
   billed at that package's per-video rate.
-- Delivery: weekly batches, each delivered a week before it is due to post.
-  Priority turnaround exists at a higher rate (not yet priced).
+- Delivery (Swarit, 2026-10-13): footage, one inspiration video and the script
+  per video by Thursday end of day; edited Friday to Monday; delivered Monday end
+  of day; Tuesday to Sunday is the client's buffer week; posted the week after.
+  Style build 2-3 days, tested on one raw clip (skipped for free-sample clients).
+- Priority turnaround per video (on top of the package rate): 72 hours +$15,
+  24-48 hours +$30, same day +$60 (max 2 a day, confirmed on WhatsApp first).
+- A new style (fresh look or another brand): $120 one time.
 - Keep-rate guarantee: if fewer than 6 of 10 videos in a batch are usable, the
   batch is re-cut free or refunded.
 - Avatar videos: count toward the package when the client provides avatar files;
