@@ -35,9 +35,11 @@ its own.
 
 ## Positioning
 
-Editorial judgment at volume: ReelNinja decides which moments are worth cutting
-and cuts them in the agency's own style. Auto-clipping tools are cheaper and do
-not choose; commodity editing subscriptions sell hands, not judgment. Output is
+Editorial judgment at volume: the client's Style System and a reference video
+that already works decide the edit; ReelNinja's pipeline does the hours and a
+person checks every video. The AI does not pick the moments (Swarit, 2026-10-10).
+Auto-clipping tools are cheaper but edit to no reference and no house style;
+commodity editing subscriptions sell hands, capped by headcount. Output here is
 not capped by headcount because the pipeline is AI-driven with human QA.
 
 ## Operating Context
@@ -49,12 +51,18 @@ ClickUp). Turnaround and revision rounds are what agencies check before signing.
 
 ## Capabilities and Constraints
 
-- Pricing (published, USD): Style System setup free for the first brand, $120
-  one time for each additional brand (Swarit, 2026-10-03); then a
-  graduated per-video ladder of $45 (1 to 50), $40 (51 to 150), $35 (151 to 300),
-  $30 (301 to 500), $25 (501+).
-- Avatar videos: same ladder when the client provides avatar files; +$20 a video
-  when ReelNinja builds the avatar. (Confirmed by Swarit 2026-10-03.)
+- Pricing (published, USD; set by Swarit 2026-10-13, replacing the $45 to $25
+  per-video ladder): Style System setup free for the first brand, $120 one time
+  for each additional brand; then monthly packages: Starter 30 videos $1,050
+  ($35), Growth 60 videos $1,800 ($30, recommended), Scale 120 videos $3,000
+  ($25). Month to month, or 10% off on a 3-month term. Videos over a package are
+  billed at that package's per-video rate.
+- Delivery: weekly batches, each delivered a week before it is due to post.
+  Priority turnaround exists at a higher rate (not yet priced).
+- Keep-rate guarantee: if fewer than 6 of 10 videos in a batch are usable, the
+  batch is re-cut free or refunded.
+- Avatar videos: count toward the package when the client provides avatar files;
+  +$20 a video when ReelNinja builds the avatar. (Confirmed by Swarit 2026-10-03.)
 - Launch videos: from $500. (Confirmed 2026-10-03.)
 - Motion graphics, SaaS explainers, long-form edits: quoted per project. Motion
   graphics pricing is undecided; do not publish a number.

@@ -5,7 +5,7 @@
    we have not priced, and it says out loud when their own editors are cheaper.
 
    Our side of the arithmetic uses exactly two published facts:
-     1. the published per-video ladder
+     1. the published monthly packages
      2. the published setup terms (first brand free, $120 per extra brand)
    It deliberately does NOT print our internal minutes or cost per video.
    Those are ours to manage; what the visitor pays is the ladder.
@@ -15,21 +15,18 @@
   'use strict';
 
   /* ---- published constants. Change here, changes everywhere. ----
-     Source: USD ladder set by Swarit, 2026-10-03: start at $45, step down $5
-     a band, floor at $25. Market context in Influenzo-biz-vault
+     Source: monthly packages set by Swarit, 2026-10-13 (replaced the $45 to
+     $25 per-video ladder). Market context in Influenzo-biz-vault
      07-STRATEGIC/2026-09-23-white-label-pricing-research.md.
 
-     The ladder is GRADUATED, like tax brackets: each rate covers only the
-     videos inside its band. The first 50 are $45, the next 100 are $40, and so
-     on. That way adding a video can never lower the monthly bill, which an
-     all-units ladder does at every band edge. Must match the table in
-     src/index.html. */
-  var LADDER = [
-    { upTo: 50,       price: 45, label: '1 – 50' },
-    { upTo: 150,      price: 40, label: '51 – 150' },
-    { upTo: 300,      price: 35, label: '151 – 300' },
-    { upTo: 500,      price: 30, label: '301 – 500' },
-    { upTo: Infinity, price: 25, label: '501 +' }
+     Videos over a package are billed at that package's per-video rate, and
+     the visitor is shown the cheapest package for their volume. Each option's
+     cost only rises with volume, so the cheapest of them does too: adding a
+     video can never lower the bill. Must match the table in src/index.html. */
+  var PACKAGES = [
+    { name: 'Starter', videos: 30,  price: 1050 },
+    { name: 'Growth',  videos: 60,  price: 1800 },
+    { name: 'Scale',   videos: 120, price: 3000 }
   ];
   var HOURS_PER_MONTH = 160;   // one full-time editor
   var EXTRA_BRAND = 120;       // setup per additional brand, USD; the first is free
@@ -69,25 +66,26 @@
     return hs && m ? hs + ' ' + m + ' min' : (hs || m + ' min');
   }
 
-  /* Graduated cost of v videos in one month. */
-  function costFor(v) {
-    var total = 0, prev = 0;
-    for (var i = 0; i < LADDER.length && v > prev; i++) {
-      total += (Math.min(v, LADDER[i].upTo) - prev) * LADDER[i].price;
-      prev = LADDER[i].upTo;
+  function rate(p) { return p.price / p.videos; }
+  function optionCost(p, v) { return p.price + Math.max(0, v - p.videos) * rate(p); }
+
+  /* Cheapest package for v videos in one month, and what it costs. */
+  function bestFor(v) {
+    var best = PACKAGES[0], cost = optionCost(best, v);
+    for (var i = 1; i < PACKAGES.length; i++) {
+      var c = optionCost(PACKAGES[i], v);
+      if (c < cost) { best = PACKAGES[i]; cost = c; }
     }
-    return total;
+    return { pkg: best, cost: cost, extra: Math.max(0, v - best.videos) };
   }
-  function topBand(v) {
-    for (var i = 0; i < LADDER.length; i++) if (v <= LADDER[i].upTo) return LADDER[i];
-    return LADDER[LADDER.length - 1];
-  }
+  function costFor(v) { return v > 0 ? bestFor(v).cost : 0; }
+  var LOWEST_RATE = rate(PACKAGES[PACKAGES.length - 1]);
 
   /* Lowest monthly volume at which our average rate is at or below theirs.
      The average only falls as volume rises, so the first hit is the answer.
-     Null when their rate is at or under our lowest band. */
+     Null when their rate is at or under our lowest per-video rate. */
   function breakEven(cpsThem) {
-    if (cpsThem <= LADDER[LADDER.length - 1].price) return null;
+    if (cpsThem <= LOWEST_RATE) return null;
     for (var v = 1; v <= BREAK_SEARCH_MAX; v++) {
       if (costFor(v) / v <= cpsThem) return v;
     }
@@ -113,13 +111,14 @@
     var costThem = hours * i.rate;
     var cpsThem = videos > 0 ? costThem / videos : 0;
 
-    var costUs = costFor(videos);
+    var best = bestFor(videos);
+    var costUs = videos > 0 ? best.cost : 0;
     var cpsUs = videos > 0 ? costUs / videos : 0;
 
     return {
       videos: videos, hours: hours, people: people, perEditor: perEditor,
       costThem: costThem, cpsThem: cpsThem,
-      band: topBand(videos), costUs: costUs, cpsUs: cpsUs,
+      best: best, costUs: costUs, cpsUs: cpsUs,
       save: costThem - costUs, brk: breakEven(cpsThem)
     };
   }
@@ -145,10 +144,11 @@
     el.costUs.textContent = money(r.costUs);
     el.cpsThem.textContent = money(r.cpsThem);
     el.cpsUs.textContent = money(r.cpsUs);
-    el.tier.textContent = r.band.label + ' at ' + money(r.band.price);
+    el.tier.textContent = r.best.pkg.name + ', ' + money(r.best.pkg.price) +
+      (r.best.extra ? ' + ' + num(r.best.extra) + ' extra at ' + money(rate(r.best.pkg)) : '');
 
     el.delta.textContent = num(r.videos) + ' videos a month costs you ' + money(r.costThem) +
-      ' in editing today. On the system, at our published rates, ' + money(r.costUs) + '.';
+      ' in editing today. On the system, on our published packages, ' + money(r.costUs) + '.';
 
     if (el.peekVideos) {
       el.peekVideos.textContent = num(r.videos) + ' videos a month';
